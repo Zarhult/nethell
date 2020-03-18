@@ -8,7 +8,7 @@
 class Texture
 {
     public:
-	typedef std::shared_ptr<Texture> TexturePtr;
+	typedef std::unique_ptr<Texture> TexturePtr;
 
     public:
 	explicit Texture(int width, int height) : width(width), height(height) {} 

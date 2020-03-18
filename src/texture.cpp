@@ -5,7 +5,7 @@
 
 Texture::~Texture()
 {
-    this->free();
+    free();
 }
 
 bool Texture::loadFromFile(SDL_Renderer* renderer, std::string path)

@@ -8,7 +8,7 @@
 
 Game::~Game()
 {
-    this->clean();
+    clean();
 }
 
 bool Game::init(int winWidth, int winHeight)
@@ -61,13 +61,12 @@ bool Game::init(int winWidth, int winHeight)
 
 bool Game::loadTexture(std::string path)
 {
-    // Must use shared pointer in order to use smart pointer vector of textures in Game class
-    Texture::TexturePtr pTexture { std::make_shared<Texture>(0, 0) };
+    Texture::TexturePtr pTexture { std::make_unique<Texture>(0, 0) };
     bool success { pTexture->loadFromFile(renderer, path) };
 
     if (success)
     {
-	textureVec.push_back(pTexture);
+	textureVec.push_back(std::move(pTexture));
     }
 
     return success;
@@ -98,7 +97,8 @@ void Game::clean()
 {
     for (unsigned int i = 0; i < textureVec.size(); ++i)
     {
-	textureVec.at(i)->free();
+	// textureVec.at(i)->free(); // unique_ptr automatically calls destructor when game goes out of scope (?)
+	textureVec.pop_back();
     }
 
     SDL_DestroyRenderer(renderer);
