@@ -11,9 +11,9 @@ Game::~Game()
     clean();
 }
 
-bool Game::init(int winWidth, int winHeight)
+bool Game::init(const int &winWidth, const int &winHeight)
 {
-    bool success { true };
+    bool success {true};
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
@@ -40,8 +40,8 @@ bool Game::init(int winWidth, int winHeight)
 	    {
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-		// Initialize PNG loading
-		int imgFlags { IMG_INIT_JPG };
+		// Initialize JPG loading
+		int imgFlags {IMG_INIT_JPG};
 		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
 		    std::cout << "Unable to initialize SDL_image: " << IMG_GetError() << std::endl;
@@ -59,10 +59,10 @@ bool Game::init(int winWidth, int winHeight)
     return success;
 }
 
-bool Game::loadTexture(std::string path)
+bool Game::loadTexture(const std::string &path)
 {
-    Texture::TexturePtr pTexture { std::make_unique<Texture>(0, 0) };
-    bool success { pTexture->loadFromFile(renderer, path) };
+    Texture::TexturePtr pTexture {std::make_unique<Texture>(0, 0)};
+    bool success {pTexture->loadFromFile(renderer, path)};
 
     if (success)
     {
@@ -87,7 +87,14 @@ void Game::render()
 
     for (unsigned int i = 0; i < textureVec.size(); ++i)
     {
-	textureVec.at(i)->render(renderer);
+	if (textureVec.at(i)) // If texture is still valid
+	{
+	    textureVec.at(i)->render(renderer, textureVec.at(i)->getXPos(), textureVec.at(i)->getYPos());
+	}
+	else
+	{
+	    std::cout << "Error: Attempted access of null element of texture vector." << std::endl;
+	}
     }
 
     SDL_RenderPresent(renderer);
@@ -113,7 +120,7 @@ void Game::clean()
     SDL_Quit();
 }
 
-bool Game::getRunStatus()
+const bool& Game::getRunStatus() const
 {
     return isRunning;
 }

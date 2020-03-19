@@ -8,26 +8,28 @@
 class Texture
 {
     public:
-	typedef std::unique_ptr<Texture> TexturePtr;
+	using TexturePtr = std::unique_ptr<Texture>;
 
     public:
-	explicit Texture(int width, int height) : width(width), height(height) {} 
-        Texture(const Texture&) = delete;
-        Texture& operator=(const Texture&) = delete;
+	explicit Texture(const int &xPos, const int &yPos) : xPos(xPos), yPos(yPos) {} 
 	~Texture();
 
-	bool loadFromFile(SDL_Renderer* renderer, std::string path);
-	void render(SDL_Renderer* renderer);
+	bool loadFromFile(SDL_Renderer* renderer, const std::string &path);
+	void render(SDL_Renderer* renderer, const int &x, const int &y);
 	void free();
 
-	int getWidth();
-	int getHeight();
+	const int &getWidth() const;
+	const int &getHeight() const;
+	const int &getXPos() const;
+	const int &getYPos() const;
 
     private:
-	SDL_Texture* texture = nullptr;
+	SDL_Texture* texture {nullptr};
 
-	int width { 0 };
-	int height { 0 };
+	int width {0};
+	int height {0};
+	int xPos {0};
+	int yPos {0};
 };
 
 #endif

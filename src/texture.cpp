@@ -8,12 +8,12 @@ Texture::~Texture()
     free();
 }
 
-bool Texture::loadFromFile(SDL_Renderer* renderer, std::string path)
+bool Texture::loadFromFile(SDL_Renderer* renderer, const std::string &path)
 {
     // Free in case existing texture
     free();
 
-    bool success { true };
+    bool success {true};
 
     SDL_Surface* loadedSurface { IMG_Load(path.c_str()) };
     if (loadedSurface == nullptr)
@@ -28,6 +28,11 @@ bool Texture::loadFromFile(SDL_Renderer* renderer, std::string path)
 	{
 	    std::cout << "SDL_CreateTextureFromSurface error: " << SDL_GetError() << std::endl;
 	    success = false;
+	}
+	else
+	{
+	    width = loadedSurface->w;
+	    height = loadedSurface->h;
 	}
 
 	SDL_FreeSurface(loadedSurface);
@@ -47,18 +52,28 @@ void Texture::free()
     }
 }
 
-void Texture::render(SDL_Renderer* renderer)
+void Texture::render(SDL_Renderer* renderer, const int &x, const int &y)
 {
-    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+    SDL_Rect renderArea {x, y, width, height};
+    SDL_RenderCopy(renderer, texture, nullptr, &renderArea);
 }
 
-int Texture::getWidth()
+const int& Texture::getWidth() const
 {
     return width;
 }
 
-int Texture::getHeight()
+const int& Texture::getHeight() const
 {
     return height;
 }
 
+const int& Texture::getXPos() const
+{
+    return xPos;
+}
+
+const int& Texture::getYPos() const
+{
+    return yPos;
+}

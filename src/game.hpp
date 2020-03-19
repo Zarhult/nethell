@@ -15,20 +15,20 @@ class Game
         Game& operator=(const Game&) = delete;
 	~Game();
 
-	bool init(int winWidth, int winHeight);
-	bool loadTexture(std::string path);
+	bool init(const int &winWidth, const int &winHeight);
+	bool loadTexture(const std::string &path);
 	void eventHandle();
 	void render();
 	void clean();
 
-	bool getRunStatus();
+	const bool& getRunStatus() const;
 
     private:
-	SDL_Window* window { nullptr };
-	SDL_Renderer* renderer { nullptr };
+	SDL_Window* window {nullptr};
+	SDL_Renderer* renderer {nullptr};
 	std::vector<Texture::TexturePtr> textureVec;
 	SDL_Event event;
-	bool isRunning { false };
+	bool isRunning {false};
 };
 
 #endif

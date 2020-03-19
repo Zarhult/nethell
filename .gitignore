@@ -9,6 +9,9 @@ Makefile
 Debug/
 compile_commands.json
 
+# ctags
+tags
+
 # Executable
-sdltest
+nethell
 
