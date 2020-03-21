@@ -4,28 +4,26 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "texture.hpp"
+#include "sdlw.hpp"
 
 class Game
 {
     public:
-	explicit Game() {}
-        Game(const Game&) = delete;
-        Game& operator=(const Game&) = delete;
-	~Game();
+	Game(const int &winWidth, const int &winHeight);
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
 
-	bool init(const int &winWidth, const int &winHeight);
-	bool loadTexture(const std::string &path);
+	bool loadTexture(const std::string &path, const int &xPos, const int &yPos);
 	void eventHandle();
 	void render();
-	void clean();
 
 	const bool& getRunStatus() const;
 
     private:
-	SDL_Window* window {nullptr};
-	SDL_Renderer* renderer {nullptr};
+	sdlw::WindowShPtr window {nullptr};
+	sdlw::RendererShPtr renderer {nullptr};
 	std::vector<Texture::TexturePtr> textureVec;
 	SDL_Event event;
 	bool isRunning {false};

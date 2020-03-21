@@ -1,67 +1,54 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <assert.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "game.hpp"
 #include "texture.hpp"
 
-Game::~Game()
+Game::Game(const int &winWidth, const int &winHeight)
 {
-    clean();
-}
-
-bool Game::init(const int &winWidth, const int &winHeight)
-{
-    bool success {true};
-
     if (SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
-	std::cout << "SDL_Init error: " << SDL_GetError() << std::endl;
-	success = false;
+	throw std::runtime_error(SDL_GetError());
     }
     else
     {
-	window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN);
+	window.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN));
 	if (window == nullptr) 
 	{
-	    std::cout << "SDL_CreateWindow error: " << SDL_GetError() << std::endl;
-	    success = false;
+	    throw std::runtime_error(SDL_GetError());
 	} 
 	else 
 	{
-	    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	    renderer.reset(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
 	    if (renderer == nullptr)
 	    {
-		std::cout << "SDL_CreateRenderer error: " << SDL_GetError() << std::endl;
-		success = false;
+		throw std::runtime_error(SDL_GetError());
 	    }
 	    else
 	    {
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(renderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
 
 		// Initialize JPG loading
 		int imgFlags {IMG_INIT_JPG};
 		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
-		    std::cout << "Unable to initialize SDL_image: " << IMG_GetError() << std::endl;
-		    success = false;
+		    throw std::runtime_error(IMG_GetError());
 		} 
+		else // If all initialized successfuly
+		{
+		    isRunning = true;
+		}
 	    }
 	}
     }
-
-    if (success)
-    {
-	isRunning = true;
-    }
-
-    return success;
 }
 
-bool Game::loadTexture(const std::string &path)
+bool Game::loadTexture(const std::string &path, const int &xPos, const int &yPos)
 {
-    Texture::TexturePtr pTexture {std::make_unique<Texture>(0, 0)};
+    Texture::TexturePtr pTexture {std::make_unique<Texture>(xPos, yPos)};
     bool success {pTexture->loadFromFile(renderer, path)};
 
     if (success)
@@ -83,41 +70,16 @@ void Game::eventHandle()
 
 void Game::render()
 {
-    SDL_RenderClear(renderer);
+    SDL_RenderClear(renderer.get());
 
     for (unsigned int i = 0; i < textureVec.size(); ++i)
     {
-	if (textureVec.at(i)) // If texture is still valid
-	{
-	    textureVec.at(i)->render(renderer, textureVec.at(i)->getXPos(), textureVec.at(i)->getYPos());
-	}
-	else
-	{
-	    std::cout << "Error: Attempted access of null element of texture vector." << std::endl;
-	}
+	assert(textureVec.at(i));
+
+	textureVec.at(i)->render(renderer, nullptr, textureVec.at(i)->getXPos(), textureVec.at(i)->getYPos());
     }
 
-    SDL_RenderPresent(renderer);
-}
-
-void Game::clean() 
-{
-    for (unsigned int i = 0; i < textureVec.size(); ++i)
-    {
-	// textureVec.at(i)->free(); // unique_ptr automatically calls destructor when game goes out of scope (?)
-	textureVec.pop_back();
-    }
-
-    SDL_DestroyRenderer(renderer);
-    renderer = nullptr;
-
-    SDL_DestroyWindow(window);
-    window = nullptr;
-
-    isRunning = false;
-
-    IMG_Quit();
-    SDL_Quit();
+    SDL_RenderPresent(renderer.get());
 }
 
 const bool& Game::getRunStatus() const

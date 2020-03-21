@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <SDL2/SDL.h>
+#include "sdlw.hpp"
 
 class Texture
 {
@@ -12,24 +13,22 @@ class Texture
 
     public:
 	explicit Texture(const int &xPos, const int &yPos) : xPos(xPos), yPos(yPos) {} 
-	~Texture();
 
-	bool loadFromFile(SDL_Renderer* renderer, const std::string &path);
-	void render(SDL_Renderer* renderer, const int &x, const int &y);
-	void free();
+	bool loadFromFile(sdlw::RendererShPtr renderer, const std::string &path);
+	void render(sdlw::RendererShPtr renderer, SDL_Rect* clip = nullptr, const int &x = 0, const int &y = 0);
 
-	const int &getWidth() const;
-	const int &getHeight() const;
-	const int &getXPos() const;
-	const int &getYPos() const;
+	const int& getWidth()	const;
+	const int& getHeight()	const;
+	const int& getXPos()	const;
+	const int& getYPos()	const;
 
     private:
-	SDL_Texture* texture {nullptr};
+	sdlw::TextureShPtr texture {nullptr};
 
-	int width {0};
-	int height {0};
-	int xPos {0};
-	int yPos {0};
+	int width   {0};
+	int height  {0};
+	int xPos    {0};
+	int yPos    {0};
 };
 
 #endif
