@@ -17,11 +17,11 @@ bool Texture::loadFromFile(const std::string &path)
     assert(texRenderer);
 
     // Reset if existing texture
-    if (texture)
+    if (mTexture)
     {
-	texture.reset();
-	width = 0;
-	height = 0;
+	mTexture.reset();
+	mWidth = 0;
+	mHeight = 0;
     }
 
     bool success {true};
@@ -34,16 +34,16 @@ bool Texture::loadFromFile(const std::string &path)
     }
     else
     {
-	texture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), loadedSurface));
-	if (texture == nullptr)
+	mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), loadedSurface));
+	if (mTexture == nullptr)
 	{
 	    std::cerr << "SDL_CreateTextureFromSurface error: " << SDL_GetError() << std::endl;
 	    success = false;
 	}
 	else
 	{
-	    width = loadedSurface->w;
-	    height = loadedSurface->h;
+	    mWidth = loadedSurface->w;
+	    mHeight = loadedSurface->h;
 	}
 
 	SDL_FreeSurface(loadedSurface);
@@ -56,7 +56,7 @@ void Texture::render(int xPos, int yPos, SDL_Rect* clip)
 {
     assert(texRenderer);
 
-    SDL_Rect renderArea {xPos, yPos, width, height};
+    SDL_Rect renderArea {xPos, yPos, mWidth, mHeight};
 
     if (clip != nullptr)
     {
@@ -64,16 +64,16 @@ void Texture::render(int xPos, int yPos, SDL_Rect* clip)
 	renderArea.h = clip->h;
     }
 
-    SDL_RenderCopy(texRenderer.get(), texture.get(), clip, &renderArea);
+    SDL_RenderCopy(texRenderer.get(), mTexture.get(), clip, &renderArea);
 }
 
 int Texture::getWidth() const
 {
-    return width;
+    return mWidth;
 }
 
 int Texture::getHeight() const
 {
-    return height;
+    return mHeight;
 }
 

@@ -13,7 +13,7 @@ class SpriteSheet : public Texture
 
     public:
 	SpriteSheet(sdlw::RendererShPtr texRenderer, int spriteWidth, int spriteHeight, int spritesX, int spritesY) 
-		    : Texture(texRenderer), spriteWidth(spriteWidth), spriteHeight(spriteHeight), spritesX(spritesX), spritesY(spritesY) {} 
+	    : Texture(texRenderer), mSpriteWidth(spriteWidth), mSpriteHeight(spriteHeight), mSpritesX(spritesX), mSpritesY(spritesY) {} 
 
 	int getSpriteWidth()  const;
 	int getSpriteHeight() const;
@@ -21,10 +21,10 @@ class SpriteSheet : public Texture
 	int getSpritesY()     const;
 
     private:
-	int spriteWidth	 {0};
-	int spriteHeight {0};
-	int spritesX	 {0};
-	int spritesY	 {0};
+	int mSpriteWidth    {0};
+	int mSpriteHeight   {0};
+	int mSpritesX	    {0};
+	int mSpritesY	    {0};
 };
 
 #endif

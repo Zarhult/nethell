@@ -39,7 +39,7 @@ Game::Game(int winWidth, int winHeight)
 		} 
 		else // If all initialized successfuly
 		{
-		    isRunning = true;
+		    mIsRunning = true;
 		}
 	    }
 	}
@@ -61,7 +61,7 @@ bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteH
 	{
 	    // i is sprite num
 	    Sprite::SpriteShPtr newSprite(std::make_shared<Sprite>(spriteSheet, i));
-	    spriteVec.push_back(std::move(newSprite));
+	    mSpriteVec.push_back(std::move(newSprite));
 	}
     }
     else
@@ -74,10 +74,10 @@ bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteH
 
 void Game::eventHandle()
 {
-    SDL_PollEvent(&event);
-    if (event.type == SDL_QUIT)
+    SDL_PollEvent(&mEvent);
+    if (mEvent.type == SDL_QUIT)
     {
-	isRunning = false;
+	mIsRunning = false;
     }
 }
 
@@ -85,11 +85,11 @@ void Game::render()
 {
     SDL_RenderClear(mRenderer.get());
 
-    for (unsigned int i = 0; i < spriteVec.size(); ++i)
+    for (unsigned int i = 0; i < mSpriteVec.size(); ++i)
     {
-	assert(spriteVec.at(i));
+	assert(mSpriteVec.at(i));
 
-	spriteVec.at(i)->render();
+	mSpriteVec.at(i)->render();
     }
 
     SDL_RenderPresent(mRenderer.get());
@@ -97,26 +97,26 @@ void Game::render()
 
 void Game::moveSprite(int spriteNum, int xPos, int yPos)
 {
-    assert(static_cast<unsigned int>(spriteNum) < spriteVec.size());
+    assert(static_cast<unsigned int>(spriteNum) < mSpriteVec.size());
 
-    spriteVec.at(spriteNum)->setXY(xPos, yPos);
+    mSpriteVec.at(spriteNum)->setXY(xPos, yPos);
 }
 
 int Game::getSpriteXPos(int spriteNum) const
 {
-    assert(static_cast<unsigned int>(spriteNum) < spriteVec.size());
+    assert(static_cast<unsigned int>(spriteNum) < mSpriteVec.size());
 
-    return spriteVec.at(spriteNum)->getXPos();
+    return mSpriteVec.at(spriteNum)->getXPos();
 }
 
 int Game::getSpriteYPos(int spriteNum) const
 {
-    assert(static_cast<unsigned int>(spriteNum) < spriteVec.size());
+    assert(static_cast<unsigned int>(spriteNum) < mSpriteVec.size());
 
-    return spriteVec.at(spriteNum)->getYPos();
+    return mSpriteVec.at(spriteNum)->getYPos();
 }
 
 bool Game::getRunStatus() const
 {
-    return isRunning;
+    return mIsRunning;
 }

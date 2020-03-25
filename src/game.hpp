@@ -26,12 +26,13 @@ class Game
 	bool getRunStatus() const;
 
     private:
-	sdlw::WindowShPtr mWindow {nullptr};
-	sdlw::RendererShPtr mRenderer {nullptr};
-	SpriteSheet::SpriteSheetShPtr mSpriteSheet {nullptr};
-	std::vector<Sprite::SpriteShPtr> spriteVec;
-	SDL_Event event;
-	bool isRunning {false};
+	sdlw::WindowShPtr mWindow		    {nullptr};
+	sdlw::RendererShPtr mRenderer		    {nullptr};
+	SpriteSheet::SpriteSheetShPtr mSpriteSheet  {nullptr};
+	std::vector<Sprite::SpriteShPtr> mSpriteVec;
+	SDL_Event mEvent;
+
+	bool mIsRunning {false};
 };
 
 #endif

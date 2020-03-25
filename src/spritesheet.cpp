@@ -3,20 +3,20 @@
 
 int SpriteSheet::getSpriteWidth() const
 {
-    return this->spriteWidth;
+    return this->mSpriteWidth;
 }
 
 int SpriteSheet::getSpriteHeight() const
 {
-    return this->spriteHeight;
+    return this->mSpriteHeight;
 }
 
 int SpriteSheet::getSpritesX() const
 {
-    return this->spritesX;
+    return this->mSpritesX;
 }
 
 int SpriteSheet::getSpritesY() const
 {
-    return this->spritesY;
+    return this->mSpritesY;
 }

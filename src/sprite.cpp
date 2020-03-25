@@ -3,28 +3,28 @@
 
 void Sprite::render()
 {
-    int spriteWidth  {spriteSheetPtr->getSpriteWidth() };
-    int spriteHeight {spriteSheetPtr->getSpriteHeight()};
-    int spritesX     {spriteSheetPtr->getSpritesX()    };
+    int spriteWidth  {mSpriteSheetPtr->getSpriteWidth() };
+    int spriteHeight {mSpriteSheetPtr->getSpriteHeight()};
+    int spritesX     {mSpriteSheetPtr->getSpritesX()    };
 
     // Calculate clip area of sprite sheet to use in rendering
-    SDL_Rect clip {(spriteNum % spritesX) * spriteWidth, (spriteNum / spritesX) * spriteHeight, spriteWidth, spriteHeight};
+    SDL_Rect clip {(mSpriteNum % spritesX) * spriteWidth, (mSpriteNum / spritesX) * spriteHeight, spriteWidth, spriteHeight};
 
-    spriteSheetPtr->render(xPos, yPos, &clip);
+    mSpriteSheetPtr->render(mXPos, mYPos, &clip);
 }
 
 void Sprite::setXY(int x, int y)
 {
-    xPos = x;
-    yPos = y;
+    mXPos = x;
+    mYPos = y;
 }
 
 int Sprite::getXPos() const
 {
-    return xPos;
+    return mXPos;
 }
 
 int Sprite::getYPos() const
 {
-    return yPos;
+    return mYPos;
 }

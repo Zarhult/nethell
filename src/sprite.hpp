@@ -11,7 +11,7 @@ class Sprite
 
     public:
 	Sprite(SpriteSheet::SpriteSheetShPtr spriteSheetPtr, int spriteNum)
-	    : spriteSheetPtr(spriteSheetPtr), spriteNum(spriteNum) {}
+	    : mSpriteSheetPtr(spriteSheetPtr), mSpriteNum(spriteNum) {}
 
 	void render();
 
@@ -21,10 +21,10 @@ class Sprite
 	int getYPos() const;
 
     private:
-	SpriteSheet::SpriteSheetShPtr spriteSheetPtr {nullptr};	// Pointer to sprite sheet associated with this sprite
-	int spriteNum {0};					// Its number in the sprite sheet
-	int xPos {0};
-	int yPos {0};
+	SpriteSheet::SpriteSheetShPtr mSpriteSheetPtr {nullptr};    // Pointer to sprite sheet associated with this sprite
+	int mSpriteNum	{0};					    // Its number in the sprite sheet
+	int mXPos	{0};
+	int mYPos	{0};
 };
 
 #endif
