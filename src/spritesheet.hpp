@@ -1,23 +1,30 @@
 #ifndef SPRITESHEET_HPP
 #define SPRITESHEET_HPP
 
-#include <string>
 #include <memory>
 #include <SDL2/SDL.h>
 #include "texture.hpp"
+#include "sdlw.hpp"
 
-class SpriteSheet
+class SpriteSheet : public Texture
 {
     public:
-	using SpriteSheetPtr = std::unique_ptr<SpriteSheet>;
+	using SpriteSheetShPtr = std::shared_ptr<SpriteSheet>;
 
     public:
-	SpriteSheet() {} 
-	~SpriteSheet();
+	SpriteSheet(sdlw::RendererShPtr texRenderer, int spriteWidth, int spriteHeight, int spritesX, int spritesY) 
+		    : Texture(texRenderer), spriteWidth(spriteWidth), spriteHeight(spriteHeight), spritesX(spritesX), spritesY(spritesY) {} 
+
+	int getSpriteWidth()  const;
+	int getSpriteHeight() const;
+	int getSpritesX()     const;
+	int getSpritesY()     const;
 
     private:
-	Texture::TexturePtr sheetTexture {nullptr};
-
+	int spriteWidth	 {0};
+	int spriteHeight {0};
+	int spritesX	 {0};
+	int spritesY	 {0};
 };
 
 #endif

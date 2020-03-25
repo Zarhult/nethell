@@ -5,26 +5,31 @@
 #include <vector>
 #include <memory>
 #include <SDL2/SDL.h>
-#include "texture.hpp"
+#include "spritesheet.hpp"
+#include "sprite.hpp"
 #include "sdlw.hpp"
 
 class Game
 {
     public:
-	Game(const int &winWidth, const int &winHeight);
+	Game(int winWidth, int winHeight);
 	Game(const Game&) = delete;
 	Game& operator=(const Game&) = delete;
 
-	bool loadTexture(const std::string &path, const int &xPos, const int &yPos);
+	bool loadSpriteSheet(const std::string &path, int spriteWidth, int spriteHeight, int spritesX, int spritesY);
 	void eventHandle();
 	void render();
+	void moveSprite(int spriteNum, int xPos, int yPos);
 
-	const bool& getRunStatus() const;
+	int getSpriteXPos(int spriteNum) const;
+	int getSpriteYPos(int spriteNum) const;
+	bool getRunStatus() const;
 
     private:
-	sdlw::WindowShPtr window {nullptr};
-	sdlw::RendererShPtr renderer {nullptr};
-	std::vector<Texture::TexturePtr> textureVec;
+	sdlw::WindowShPtr mWindow {nullptr};
+	sdlw::RendererShPtr mRenderer {nullptr};
+	SpriteSheet::SpriteSheetShPtr mSpriteSheet {nullptr};
+	std::vector<Sprite::SpriteShPtr> spriteVec;
 	SDL_Event event;
 	bool isRunning {false};
 };

@@ -7,10 +7,21 @@ int main()
 {
     try
     {
-	Game gameObj(1920, 1080);
+	int winWidth	    {1920};
+	int winHeight	    {1080};
+	int spriteWidth	    {256};
+	int spriteHeight    {256};
+	int spritesX	    {2};
+	int spritesY	    {2};
 
-	if (gameObj.loadTexture("images/test.jpg", 0, 0))
+	Game gameObj(winWidth, winHeight);
+	if (gameObj.loadSpriteSheet("images/test.jpg", spriteWidth, spriteHeight, spritesX, spritesY))
 	{
+	    gameObj.moveSprite(0, 0, 0);
+	    gameObj.moveSprite(1, spriteWidth, 0);
+	    gameObj.moveSprite(2, 0, spriteHeight);
+	    gameObj.moveSprite(3, spriteWidth, spriteHeight);
+
 	    while (gameObj.getRunStatus())
 	    {
 		gameObj.eventHandle();

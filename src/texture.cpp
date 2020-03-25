@@ -5,9 +5,16 @@
 #include <SDL2/SDL_image.h>
 #include "texture.hpp"
 
-bool Texture::loadFromFile(sdlw::RendererShPtr renderer, const std::string &path)
+Texture::Texture(sdlw::RendererShPtr renderer)
 {
     assert(renderer);
+
+    this->texRenderer = renderer;
+}
+
+bool Texture::loadFromFile(const std::string &path)
+{
+    assert(texRenderer);
 
     // Reset if existing texture
     if (texture)
@@ -27,7 +34,7 @@ bool Texture::loadFromFile(sdlw::RendererShPtr renderer, const std::string &path
     }
     else
     {
-	texture.reset(SDL_CreateTextureFromSurface(renderer.get(), loadedSurface));
+	texture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), loadedSurface));
 	if (texture == nullptr)
 	{
 	    std::cerr << "SDL_CreateTextureFromSurface error: " << SDL_GetError() << std::endl;
@@ -45,9 +52,9 @@ bool Texture::loadFromFile(sdlw::RendererShPtr renderer, const std::string &path
     return success;
 }
 
-void Texture::render(sdlw::RendererShPtr renderer, SDL_Rect* clip, const int &xPos, const int &yPos)
+void Texture::render(int xPos, int yPos, SDL_Rect* clip)
 {
-    assert(renderer);
+    assert(texRenderer);
 
     SDL_Rect renderArea {xPos, yPos, width, height};
 
@@ -57,25 +64,16 @@ void Texture::render(sdlw::RendererShPtr renderer, SDL_Rect* clip, const int &xP
 	renderArea.h = clip->h;
     }
 
-    SDL_RenderCopy(renderer.get(), texture.get(), clip, &renderArea);
+    SDL_RenderCopy(texRenderer.get(), texture.get(), clip, &renderArea);
 }
 
-const int& Texture::getWidth() const
+int Texture::getWidth() const
 {
     return width;
 }
 
-const int& Texture::getHeight() const
+int Texture::getHeight() const
 {
     return height;
 }
 
-const int& Texture::getXPos() const
-{
-    return xPos;
-}
-
-const int& Texture::getYPos() const
-{
-    return yPos;
-}

@@ -8,6 +8,8 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/game.cpp
     src/texture.cpp
+    src/spritesheet.cpp
+    src/sprite.cpp
 )
 
 include(FindPkgConfig)

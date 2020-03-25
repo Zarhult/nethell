@@ -9,26 +9,21 @@
 class Texture
 {
     public:
-	using TexturePtr = std::unique_ptr<Texture>;
+	Texture(sdlw::RendererShPtr renderer);
+	bool loadFromFile(const std::string &path);
+	void render(int xPos = 0, int yPos = 0, SDL_Rect* clip = nullptr);    // If clip is nullptr, full texture is rendered
 
-    public:
-	explicit Texture(const int &xPos, const int &yPos) : xPos(xPos), yPos(yPos) {} 
+	sdlw::RendererShPtr texRenderer;    // Pointer to the renderer associated with this texture
 
-	bool loadFromFile(sdlw::RendererShPtr renderer, const std::string &path);
-	void render(sdlw::RendererShPtr renderer, SDL_Rect* clip = nullptr, const int &x = 0, const int &y = 0);
+	int getWidth()	const;
+	int getHeight()	const;
 
-	const int& getWidth()	const;
-	const int& getHeight()	const;
-	const int& getXPos()	const;
-	const int& getYPos()	const;
-
-    private:
+    protected:
 	sdlw::TextureShPtr texture {nullptr};
 
+    private:
 	int width   {0};
 	int height  {0};
-	int xPos    {0};
-	int yPos    {0};
 };
 
 #endif
