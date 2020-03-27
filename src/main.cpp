@@ -9,23 +9,31 @@ int main()
     {
 	int winWidth	    {1920};
 	int winHeight	    {1080};
-	int spriteWidth	    {256};
-	int spriteHeight    {256};
+	int spriteWidth	    {120};
+	int spriteHeight    {120};
 	int spritesX	    {2};
-	int spritesY	    {2};
+	int spritesY	    {1};
 
 	Game gameObj(winWidth, winHeight);
-	if (gameObj.loadSpriteSheet("images/test.jpg", spriteWidth, spriteHeight, spritesX, spritesY))
+	if (gameObj.loadSpriteSheet("sprites/wizard.png", spriteWidth, spriteHeight, spritesX, spritesY))
 	{
-	    gameObj.moveSprite(0, 0, 0);
-	    gameObj.moveSprite(1, spriteWidth, 0);
-	    gameObj.moveSprite(2, 0, spriteHeight);
-	    gameObj.moveSprite(3, spriteWidth, spriteHeight);
+	    gameObj.toggleSprite(Game::PLAYER);
+	    gameObj.moveSprite(Game::PLAYER, 0, 0);
 
 	    while (gameObj.getRunStatus())
 	    {
 		gameObj.eventHandle();
 		gameObj.render();
+		if (gameObj.getSpriteNum(Game::PLAYER) == Game::PLAYER_WALK)
+		{
+		    gameObj.changeSprite(Game::PLAYER, Game::PLAYER_IDLE);
+		}
+		else
+		{
+		    gameObj.changeSprite(Game::PLAYER, Game::PLAYER_WALK);
+		}
+
+		SDL_Delay(100);
 	    }
 	}
     }

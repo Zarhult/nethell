@@ -1,5 +1,6 @@
-#include "sprite.hpp"
+#include <assert.h>
 #include <SDL2/SDL.h>
+#include "sprite.hpp"
 
 void Sprite::render()
 {
@@ -19,12 +20,47 @@ void Sprite::setXY(int x, int y)
     mYPos = y;
 }
 
+void Sprite::setSpriteNum(int spriteNum)
+{
+    mSpriteNum = spriteNum;
+}
+
+void Sprite::toggleOnscreen()
+{
+    if (!mIsOnscreen)
+    {
+	mIsOnscreen = true;
+    }
+    else
+    {
+	mIsOnscreen = false;
+    }
+}
+
+int Sprite::getSpriteNum() const
+{
+    assert(this);
+
+    return mSpriteNum;
+}
+
 int Sprite::getXPos() const
 {
+    assert(this);
+
     return mXPos;
 }
 
 int Sprite::getYPos() const
 {
+    assert(this);
+
     return mYPos;
+}
+
+bool Sprite::isOnscreen() const
+{
+    assert(this);
+
+    return mIsOnscreen;
 }

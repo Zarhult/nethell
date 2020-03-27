@@ -31,8 +31,8 @@ Game::Game(int winWidth, int winHeight)
 	    {
 		SDL_SetRenderDrawColor(mRenderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
 
-		// Initialize JPG loading
-		int imgFlags {IMG_INIT_JPG};
+		// Initialize PNG loading
+		int imgFlags {IMG_INIT_PNG};
 		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
 		    throw std::runtime_error(IMG_GetError());
@@ -53,20 +53,14 @@ bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteH
 
     if (success)
     {
-	mSpriteSheet = spriteSheet;
+	mSpriteSheetVec.push_back(std::move(spriteSheet));
 
-	int totalSprites = spritesX * spritesY;
-
-	for (int i = 0; i < totalSprites; ++i)
-	{
-	    // i is sprite num
-	    Sprite::SpriteShPtr newSprite(std::make_shared<Sprite>(spriteSheet, i));
-	    mSpriteVec.push_back(std::move(newSprite));
-	}
+	Sprite::SpriteShPtr newSprite(std::make_shared<Sprite>(mSpriteSheetVec.back(), 0));
+	mSpriteVec.push_back(std::move(newSprite));
     }
     else
     {
-	std::cerr << "Failed to load file into sprite sheet." << std::endl;
+	std::cerr << "Failed to load texture file into sprite sheet." << std::endl;
     }
 
     return success;
@@ -89,34 +83,73 @@ void Game::render()
     {
 	assert(mSpriteVec.at(i));
 
-	mSpriteVec.at(i)->render();
+	//segfault when attempt to render sprite ???
+	if (mSpriteVec.at(i)->isOnscreen())
+	{
+	    mSpriteVec.at(i)->render();
+	}
     }
 
     SDL_RenderPresent(mRenderer.get());
 }
 
-void Game::moveSprite(int spriteNum, int xPos, int yPos)
+void Game::moveSprite(int spriteVecPos, int xPos, int yPos)
 {
-    assert(static_cast<unsigned int>(spriteNum) < mSpriteVec.size());
+    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
 
-    mSpriteVec.at(spriteNum)->setXY(xPos, yPos);
+    mSpriteVec.at(spriteVecPos)->setXY(xPos, yPos);
 }
 
-int Game::getSpriteXPos(int spriteNum) const
+void Game::changeSprite(int spriteVecPos, int newSpriteNum)
 {
-    assert(static_cast<unsigned int>(spriteNum) < mSpriteVec.size());
+    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    // TODO: assert that newSpriteNum is within bounds of the spritesheet associated with sprite
 
-    return mSpriteVec.at(spriteNum)->getXPos();
+    mSpriteVec.at(spriteVecPos)->setSpriteNum(newSpriteNum);
 }
 
-int Game::getSpriteYPos(int spriteNum) const
+void Game::toggleSprite(int spriteVecPos)
 {
-    assert(static_cast<unsigned int>(spriteNum) < mSpriteVec.size());
+    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
 
-    return mSpriteVec.at(spriteNum)->getYPos();
+    mSpriteVec.at(spriteVecPos)->toggleOnscreen();
+}
+
+int Game::getSpriteNum(int spriteVecPos) const
+{
+    assert(this);
+    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+
+    return mSpriteVec.at(spriteVecPos)->getSpriteNum();
+}
+
+int Game::getSpriteXPos(int spriteVecPos) const
+{
+    assert(this);
+    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+
+    return mSpriteVec.at(spriteVecPos)->getXPos();
+}
+
+int Game::getSpriteYPos(int spriteVecPos) const
+{
+    assert(this);
+    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+
+    return mSpriteVec.at(spriteVecPos)->getYPos();
+}
+
+bool Game::getSpriteIsOnscreen(int spriteVecPos) const
+{
+    assert(this);
+    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+
+    return mSpriteVec.at(spriteVecPos)->isOnscreen();
 }
 
 bool Game::getRunStatus() const
 {
+    assert(this);
+
     return mIsRunning;
 }

@@ -69,11 +69,15 @@ void Texture::render(int xPos, int yPos, SDL_Rect* clip)
 
 int Texture::getWidth() const
 {
+    assert(this);
+
     return mWidth;
 }
 
 int Texture::getHeight() const
 {
+    assert(this);
+
     return mHeight;
 }
 
