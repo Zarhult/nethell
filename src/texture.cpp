@@ -3,7 +3,9 @@
 #include <assert.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "texture.hpp"
+#include "sdlw.hpp"
 
 Texture::Texture(sdlw::RendererShPtr renderer)
 {
@@ -26,7 +28,7 @@ bool Texture::loadFromFile(const std::string &path)
 
     bool success {true};
 
-    SDL_Surface* loadedSurface { IMG_Load(path.c_str()) };
+    SDL_Surface* loadedSurface {IMG_Load(path.c_str())};
     if (loadedSurface == nullptr)
     {
 	std::cerr << "IMG_Load error: " << IMG_GetError() << std::endl;
@@ -47,6 +49,46 @@ bool Texture::loadFromFile(const std::string &path)
 	}
 
 	SDL_FreeSurface(loadedSurface);
+    }
+
+    return success;
+}
+
+bool Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, SDL_Color textColor)
+{
+    assert(texRenderer);
+
+    // Reset if existing texture
+    if (mTexture)
+    {
+	mTexture.reset();
+	mWidth = 0;
+	mHeight = 0;
+    }
+
+    bool success {true};
+
+    SDL_Surface* textSurface = TTF_RenderText_Solid(textFont, text.c_str(), textColor);
+    if (textSurface == nullptr)
+    {
+	std::cerr <<  "TTF_RenderText_Solid error: " << TTF_GetError() << std::endl;
+	success = false;
+    }
+    else
+    {
+	mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), textSurface));
+	if (mTexture == nullptr)
+	{
+	    std::cerr << "SDL_CreateTextureFromSurface error: " << SDL_GetError() << std::endl;
+	    success = false;
+	}
+	else
+	{
+	    mWidth = textSurface->w;
+	    mHeight = textSurface->h;
+	}
+
+	SDL_FreeSurface(textSurface);
     }
 
     return success;

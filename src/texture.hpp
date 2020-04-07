@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "sdlw.hpp"
 
 class Texture
@@ -11,6 +12,7 @@ class Texture
     public:
 	Texture(sdlw::RendererShPtr renderer);
 	bool loadFromFile(const std::string &path);
+	bool loadFromRenderedText(const std::string &text, TTF_Font* textFont, SDL_Color textColor);
 	void render(int xPos = 0, int yPos = 0, SDL_Rect* clip = nullptr);  // If clip is nullptr, full texture is rendered
 
 	int getWidth()	const;

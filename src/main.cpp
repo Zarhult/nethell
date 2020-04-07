@@ -17,20 +17,20 @@ int main()
 	Game gameObj(winWidth, winHeight);
 	if (gameObj.loadSpriteSheet("sprites/wizard.png", spriteWidth, spriteHeight, spritesX, spritesY))
 	{
-	    gameObj.toggleSprite(Game::PLAYER);
-	    gameObj.moveSprite(Game::PLAYER, 0, 0);
+	    gameObj.toggleSprite(PLAYER);
+	    gameObj.moveSprite(PLAYER, 0, 0);
 
 	    while (gameObj.getRunStatus())
 	    {
 		gameObj.eventHandle();
 		gameObj.render();
-		if (gameObj.getSpriteNum(Game::PLAYER) == Game::PLAYER_WALK)
+		if (gameObj.getSpriteNum(PLAYER) == PLAYER_WALK)
 		{
-		    gameObj.changeSprite(Game::PLAYER, Game::PLAYER_IDLE);
+		    gameObj.changeSprite(PLAYER, PLAYER_IDLE);
 		}
 		else
 		{
-		    gameObj.changeSprite(Game::PLAYER, Game::PLAYER_WALK);
+		    gameObj.changeSprite(PLAYER, PLAYER_WALK);
 		}
 
 		SDL_Delay(100);

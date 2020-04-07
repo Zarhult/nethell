@@ -37,10 +37,15 @@ Game::Game(int winWidth, int winHeight)
 		{
 		    throw std::runtime_error(IMG_GetError());
 		} 
-		else // If all initialized successfuly
+
+		// Initialize SDL_ttf
+		if (TTF_Init() == -1)
 		{
-		    mIsRunning = true;
+		    throw std::runtime_error(TTF_GetError());
 		}
+		
+		// If all initialized successfully...
+		mIsRunning = true;
 	    }
 	}
     }
@@ -83,7 +88,6 @@ void Game::render()
     {
 	assert(mSpriteVec.at(i));
 
-	//segfault when attempt to render sprite ???
 	if (mSpriteVec.at(i)->isOnscreen())
 	{
 	    mSpriteVec.at(i)->render();
