@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "game.hpp"
 
 int main() 
@@ -50,6 +51,7 @@ int main()
 	std::cerr << "An uncaught exception occurred." << std::endl;
     }
 
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 

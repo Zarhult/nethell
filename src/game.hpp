@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "spritesheet.hpp"
 #include "sprite.hpp"
 #include "sdlw.hpp"
@@ -15,6 +16,7 @@ class Game
 	Game(int winWidth, int winHeight);
 	Game(const Game&) = delete;
 	Game& operator=(const Game&) = delete;
+	~Game();
 
 	/* Game Functions */
 
@@ -40,6 +42,7 @@ class Game
 	std::vector<SpriteSheet::SpriteSheetShPtr> mSpriteSheetVec {nullptr};
 	std::vector<Sprite::SpriteShPtr> mSpriteVec;
 	SDL_Event mEvent;
+	TTF_Font* gameFont;
 
 	bool mIsRunning {false};
 };

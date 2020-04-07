@@ -9,46 +9,52 @@
 
 Game::Game(int winWidth, int winHeight)
 {
+    // Initialize SDL and prepare the window and renderer
     if (SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
 	throw std::runtime_error(SDL_GetError());
     }
-    else
+
+    mWindow.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN));
+    if (mWindow == nullptr) 
     {
-	mWindow.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN));
-	if (mWindow == nullptr) 
-	{
-	    throw std::runtime_error(SDL_GetError());
-	} 
-	else 
-	{
-	    mRenderer.reset(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-	    if (mRenderer == nullptr)
-	    {
-		throw std::runtime_error(SDL_GetError());
-	    }
-	    else
-	    {
-		SDL_SetRenderDrawColor(mRenderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
-
-		// Initialize PNG loading
-		int imgFlags {IMG_INIT_PNG};
-		if (!(IMG_Init(imgFlags) & imgFlags))
-		{
-		    throw std::runtime_error(IMG_GetError());
-		} 
-
-		// Initialize SDL_ttf
-		if (TTF_Init() == -1)
-		{
-		    throw std::runtime_error(TTF_GetError());
-		}
-		
-		// If all initialized successfully...
-		mIsRunning = true;
-	    }
-	}
+	throw std::runtime_error(SDL_GetError());
+    } 
+    
+    mRenderer.reset(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+    if (mRenderer == nullptr)
+    {
+	throw std::runtime_error(SDL_GetError());
     }
+    SDL_SetRenderDrawColor(mRenderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
+
+    // Initialize PNG loading
+    int imgFlags {IMG_INIT_PNG};
+    if (!(IMG_Init(imgFlags) & imgFlags))
+    {
+	throw std::runtime_error(IMG_GetError());
+    } 
+
+    // Initialize SDL_ttf
+    if (TTF_Init() == -1)
+    {
+	throw std::runtime_error(TTF_GetError());
+    }
+    // Set game font	
+    gameFont = TTF_OpenFont("/usr/share/fonts/TTF/arial.ttf", 16);
+    if (gameFont == nullptr)
+    {
+	throw std::runtime_error(TTF_GetError());
+    }
+
+    // If all initialized successfully...
+    mIsRunning = true;
+}
+
+Game::~Game()
+{
+    // TODO: wrapper around font that closes itself when out of scope
+    TTF_CloseFont(gameFont);
 }
 
 bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
