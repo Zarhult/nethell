@@ -1,11 +1,11 @@
+#include "game.hpp"
+#include "texture.hpp"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
 #include <iostream>
 #include <vector>
 #include <memory>
 #include <assert.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "game.hpp"
-#include "texture.hpp"
 
 Game::Game(int winWidth, int winHeight)
 {
@@ -40,6 +40,7 @@ Game::Game(int winWidth, int winHeight)
     {
 	throw std::runtime_error(TTF_GetError());
     }
+
     // Set game font	
     gameFont = TTF_OpenFont("/usr/share/fonts/TTF/arial.ttf", 16);
     if (gameFont == nullptr)

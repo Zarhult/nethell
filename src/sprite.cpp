@@ -1,6 +1,6 @@
-#include <assert.h>
-#include <SDL2/SDL.h>
 #include "sprite.hpp"
+#include "SDL2/SDL.h"
+#include <assert.h>
 
 void Sprite::render()
 {

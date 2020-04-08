@@ -1,8 +1,8 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
 
-#include <memory>
 #include "spritesheet.hpp"
+#include <memory>
 
 class Sprite
 {

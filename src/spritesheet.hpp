@@ -1,10 +1,10 @@
 #ifndef SPRITESHEET_HPP
 #define SPRITESHEET_HPP
 
-#include <memory>
-#include <SDL2/SDL.h>
 #include "texture.hpp"
 #include "sdlw.hpp"
+#include "SDL2/SDL.h"
+#include <memory>
 
 class SpriteSheet : public Texture
 {

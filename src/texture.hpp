@@ -1,11 +1,11 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
+#include "sdlw.hpp"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
 #include <string>
 #include <memory>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include "sdlw.hpp"
 
 class Texture
 {

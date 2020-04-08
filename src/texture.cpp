@@ -1,11 +1,11 @@
+#include "texture.hpp"
+#include "sdlw.hpp"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_ttf.h"
 #include <iostream>
 #include <memory>
 #include <assert.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-#include "texture.hpp"
-#include "sdlw.hpp"
 
 Texture::Texture(sdlw::RendererShPtr renderer)
 {

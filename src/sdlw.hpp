@@ -4,8 +4,8 @@
 #ifndef SDLW_HPP
 #define SDLW_HPP
 
+#include "SDL2/SDL.h"
 #include <memory>
-#include <SDL2/SDL.h>
 
 namespace sdlw
 {

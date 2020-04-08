@@ -1,6 +1,6 @@
-#include <assert.h>
-#include <SDL2/SDL.h>
 #include "spritesheet.hpp"
+#include "SDL2/SDL.h"
+#include <assert.h>
 
 int SpriteSheet::getSpriteWidth() const
 {

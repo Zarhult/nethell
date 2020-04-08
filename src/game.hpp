@@ -1,14 +1,14 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <string>
-#include <vector>
-#include <memory>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include "spritesheet.hpp"
 #include "sprite.hpp"
 #include "sdlw.hpp"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
+#include <string>
+#include <vector>
+#include <memory>
 
 class Game
 {
