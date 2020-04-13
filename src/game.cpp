@@ -91,7 +91,7 @@ void Game::render()
 {
     SDL_RenderClear(mRenderer.get());
 
-    for (unsigned int i = 0; i < mSpriteVec.size(); ++i)
+    for (unsigned i = 0; i < mSpriteVec.size(); ++i)
     {
 	assert(mSpriteVec.at(i));
 
@@ -106,14 +106,14 @@ void Game::render()
 
 void Game::moveSprite(int spriteVecPos, int xPos, int yPos)
 {
-    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
 
     mSpriteVec.at(spriteVecPos)->setXY(xPos, yPos);
 }
 
 void Game::changeSprite(int spriteVecPos, int newSpriteNum)
 {
-    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
     // TODO: assert that newSpriteNum is within bounds of the spritesheet associated with sprite
 
     mSpriteVec.at(spriteVecPos)->setSpriteNum(newSpriteNum);
@@ -121,7 +121,7 @@ void Game::changeSprite(int spriteVecPos, int newSpriteNum)
 
 void Game::toggleSprite(int spriteVecPos)
 {
-    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
 
     mSpriteVec.at(spriteVecPos)->toggleOnscreen();
 }
@@ -129,7 +129,7 @@ void Game::toggleSprite(int spriteVecPos)
 int Game::getSpriteNum(int spriteVecPos) const
 {
     assert(this);
-    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
 
     return mSpriteVec.at(spriteVecPos)->getSpriteNum();
 }
@@ -137,7 +137,7 @@ int Game::getSpriteNum(int spriteVecPos) const
 int Game::getSpriteXPos(int spriteVecPos) const
 {
     assert(this);
-    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
 
     return mSpriteVec.at(spriteVecPos)->getXPos();
 }
@@ -145,7 +145,7 @@ int Game::getSpriteXPos(int spriteVecPos) const
 int Game::getSpriteYPos(int spriteVecPos) const
 {
     assert(this);
-    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
 
     return mSpriteVec.at(spriteVecPos)->getYPos();
 }
@@ -153,7 +153,7 @@ int Game::getSpriteYPos(int spriteVecPos) const
 bool Game::getSpriteIsOnscreen(int spriteVecPos) const
 {
     assert(this);
-    assert(static_cast<unsigned int>(spriteVecPos) < mSpriteVec.size());
+    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
 
     return mSpriteVec.at(spriteVecPos)->isOnscreen();
 }
