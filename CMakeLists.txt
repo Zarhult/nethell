@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
     src/texture.cpp
     src/spritesheet.cpp
     src/sprite.cpp
+    src/entity.cpp
 )
 
 include(FindPkgConfig)

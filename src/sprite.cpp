@@ -29,11 +29,11 @@ void Sprite::toggleOnscreen()
 {
     if (!mIsOnscreen)
     {
-	mIsOnscreen = true;
+        mIsOnscreen = true;
     }
     else
     {
-	mIsOnscreen = false;
+        mIsOnscreen = false;
     }
 }
 

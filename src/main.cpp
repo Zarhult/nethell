@@ -9,47 +9,35 @@ int main()
 {
     try
     {
-	int winWidth	    {1920};
-	int winHeight	    {1080};
-	int spriteWidth	    {120};
-	int spriteHeight    {120};
-	int spritesX	    {2};
-	int spritesY	    {1};
+        const int winWidth	    {1920};
+        const int winHeight	    {1080};
 
-	Game gameObj(winWidth, winHeight);
-	if (gameObj.loadSpriteSheet("sprites/wizard.png", spriteWidth, spriteHeight, spritesX, spritesY))
-	{
-	    gameObj.toggleSprite(PLAYER);
-	    gameObj.moveSprite(PLAYER, 0, 0);
+        Game gameObj(winWidth, winHeight);
+        if (gameObj.loadSpriteSheet("sprites/wizard.png", 120, 120, 2, 1))
+        {
+            gameObj.toggleSprite(PLAYER);
+            gameObj.moveSprite(PLAYER, 0, 0);
 
-	    while (gameObj.getRunStatus())
-	    {
-		gameObj.eventHandle();
-		gameObj.render();
-		if (gameObj.getSpriteNum(PLAYER) == PLAYER_WALK)
-		{
-		    gameObj.changeSprite(PLAYER, PLAYER_IDLE);
-		}
-		else
-		{
-		    gameObj.changeSprite(PLAYER, PLAYER_WALK);
-		}
+            while (gameObj.getRunStatus())
+            {
+                gameObj.eventHandle();
+                gameObj.render();
 
-		SDL_Delay(100);
-	    }
-	}
+                SDL_Delay(100);
+            }
+        }
     }
     catch(std::runtime_error &exception)
     {
-	std::cerr << "Runtime error: " << exception.what() << std::endl;
+        std::cerr << "Runtime error: " << exception.what() << std::endl;
     }
     catch(std::exception &exception)
     {
-	std::cerr << "Standard exception: " << exception.what() << std::endl;
+        std::cerr << "Standard exception: " << exception.what() << std::endl;
     }
     catch(...)
     {
-	std::cerr << "An uncaught exception occurred." << std::endl;
+        std::cerr << "An uncaught exception occurred." << std::endl;
     }
 
     TTF_Quit();

@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "spriteenums.hpp"
 #include "texture.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
@@ -12,19 +13,19 @@ Game::Game(int winWidth, int winHeight)
     // Initialize SDL and prepare the window and renderer
     if (SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
-	throw std::runtime_error(SDL_GetError());
+        throw std::runtime_error(SDL_GetError());
     }
 
     mWindow.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN));
     if (mWindow == nullptr) 
     {
-	throw std::runtime_error(SDL_GetError());
+        throw std::runtime_error(SDL_GetError());
     } 
-    
+
     mRenderer.reset(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
     if (mRenderer == nullptr)
     {
-	throw std::runtime_error(SDL_GetError());
+        throw std::runtime_error(SDL_GetError());
     }
     SDL_SetRenderDrawColor(mRenderer.get(), 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -32,20 +33,20 @@ Game::Game(int winWidth, int winHeight)
     int imgFlags {IMG_INIT_PNG};
     if (!(IMG_Init(imgFlags) & imgFlags))
     {
-	throw std::runtime_error(IMG_GetError());
+        throw std::runtime_error(IMG_GetError());
     } 
 
     // Initialize SDL_ttf
     if (TTF_Init() == -1)
     {
-	throw std::runtime_error(TTF_GetError());
+        throw std::runtime_error(TTF_GetError());
     }
 
     // Set game font	
-    gameFont = TTF_OpenFont("/usr/share/fonts/TTF/arial.ttf", 16);
-    if (gameFont == nullptr)
+    mGameFont = TTF_OpenFont("/usr/share/fonts/liberation/LiberationSans-Regular.ttf", 16);
+    if (mGameFont == nullptr)
     {
-	throw std::runtime_error(TTF_GetError());
+        throw std::runtime_error(TTF_GetError());
     }
 
     // If all initialized successfully...
@@ -55,7 +56,7 @@ Game::Game(int winWidth, int winHeight)
 Game::~Game()
 {
     // TODO: wrapper around font that closes itself when out of scope
-    TTF_CloseFont(gameFont);
+    TTF_CloseFont(mGameFont);
 }
 
 bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
@@ -65,14 +66,11 @@ bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteH
 
     if (success)
     {
-	mSpriteSheetVec.push_back(std::move(spriteSheet));
-
-	Sprite::SpriteShPtr newSprite(std::make_shared<Sprite>(mSpriteSheetVec.back(), 0));
-	mSpriteVec.push_back(std::move(newSprite));
+        mSpriteSheetVec.push_back(std::move(spriteSheet));
     }
     else
     {
-	std::cerr << "Failed to load texture file into sprite sheet." << std::endl;
+        std::cerr << "Failed to load texture file into sprite sheet." << std::endl;
     }
 
     return success;
@@ -81,9 +79,19 @@ bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteH
 void Game::eventHandle()
 {
     SDL_PollEvent(&mEvent);
+
+    if (mSpriteVec.at(PLAYER)->getSpriteNum() == PLAYER_WALK)
+    {
+        mSpriteVec.at(PLAYER)->setSpriteNum(PLAYER_IDLE);
+    }
+    else
+    {
+        mSpriteVec.at(PLAYER)->setSpriteNum(PLAYER_WALK);
+    }
+
     if (mEvent.type == SDL_QUIT)
     {
-	mIsRunning = false;
+        mIsRunning = false;
     }
 }
 
@@ -93,12 +101,12 @@ void Game::render()
 
     for (unsigned i = 0; i < mSpriteVec.size(); ++i)
     {
-	assert(mSpriteVec.at(i));
+        assert(mSpriteVec.at(i));
 
-	if (mSpriteVec.at(i)->isOnscreen())
-	{
-	    mSpriteVec.at(i)->render();
-	}
+        if (mSpriteVec.at(i)->isOnscreen())
+        {
+            mSpriteVec.at(i)->render();
+        }
     }
 
     SDL_RenderPresent(mRenderer.get());
@@ -164,3 +172,4 @@ bool Game::getRunStatus() const
 
     return mIsRunning;
 }
+
