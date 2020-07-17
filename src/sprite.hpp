@@ -20,13 +20,13 @@ class Sprite
         void toggleOnscreen();
 
         int getSpriteNum()  const;
-        int getXPos()	    const;
-        int getYPos() 	    const;
+        int getXPos()       const;
+        int getYPos()       const;
         bool isOnscreen()   const;
 
     private:
         SpriteSheet::SpriteSheetShPtr mSpriteSheetPtr {nullptr};    // Pointer to sprite sheet associated with this sprite
-        int mSpriteNum {0};					                        // Its number in the sprite sheet
+        int mSpriteNum {0};                                         // Its number in the sprite sheet
         int mXPos {0};
         int mYPos {0};
 

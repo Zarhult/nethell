@@ -42,7 +42,7 @@ Game::Game(int winWidth, int winHeight)
         throw std::runtime_error(TTF_GetError());
     }
 
-    // Set game font	
+    // Set game font    
     mGameFont = TTF_OpenFont("/usr/share/fonts/liberation/LiberationSans-Regular.ttf", 16);
     if (mGameFont == nullptr)
     {

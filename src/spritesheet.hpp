@@ -26,8 +26,8 @@ class SpriteSheet : public Texture
         bool mIsAnimation    {false}; // Whether this is a sheet of animation frames, or various static sprites
         int mSpriteWidth    {0};
         int mSpriteHeight   {0};
-        int mSpritesX	    {0};
-        int mSpritesY	    {0};
+        int mSpritesX       {0};
+        int mSpritesY       {0};
 };
 
 #endif

@@ -25,7 +25,7 @@ class Game
         // sheet of various static sprites, but never a combination.
         bool loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY);
         void eventHandle(); // Process an event
-        void render();		// Render all onscreen sprites
+        void render();      // Render all onscreen sprites
         void newEntity(SpriteName name, int startingSprite); // Create a new entity with given sprite (added to entity vector)
 
         /* Accessors */
@@ -34,7 +34,6 @@ class Game
         bool getRunStatus() const;
 
     private:
-        // ...ShPtr types defined for all shared pointer wrappers used in game class
         sdlw::WindowShPtr mWindow {nullptr};
         sdlw::RendererShPtr mRenderer {nullptr};
         std::vector<SpriteSheet::SpriteSheetShPtr> mSpriteSheetVec;

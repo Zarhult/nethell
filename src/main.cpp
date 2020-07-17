@@ -12,8 +12,8 @@ int main()
 {
     try
     {
-        const int winWidth	    {1920};
-        const int winHeight	    {1080};
+        const int winWidth      {1920};
+        const int winHeight     {1080};
 
         Game gameObj(winWidth, winHeight);
         if (gameObj.loadSpriteSheet("sprites/wizard.png", true, 120, 120, 2, 1))
