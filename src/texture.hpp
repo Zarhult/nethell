@@ -11,8 +11,8 @@ class Texture
 {
     public:
         Texture(sdlw::RendererShPtr renderer);
-        bool loadFromFile(const std::string &path);
-        bool loadFromRenderedText(const std::string &text, TTF_Font* textFont, SDL_Color textColor =  {0, 0, 0, 255});
+        void loadFromFile(const std::string &path);
+        void loadFromRenderedText(const std::string &text, TTF_Font* textFont, SDL_Color textColor =  {0, 0, 0, 255});
         void render(int xPos = 0, int yPos = 0, SDL_Rect* clip = nullptr); // If clip is nullptr, full texture is rendered
 
         int getWidth() const;

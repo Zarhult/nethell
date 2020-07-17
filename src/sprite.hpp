@@ -29,7 +29,6 @@ class Sprite
         int mSpriteNum {0};                                         // Its number in the sprite sheet
         int mXPos {0};
         int mYPos {0};
-
         bool mIsOnscreen {false};
 };
 

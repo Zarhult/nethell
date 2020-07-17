@@ -14,7 +14,7 @@ Texture::Texture(sdlw::RendererShPtr renderer)
     this->texRenderer = renderer;
 }
 
-bool Texture::loadFromFile(const std::string &path)
+void Texture::loadFromFile(const std::string &path)
 {
     assert(texRenderer);
 
@@ -25,36 +25,28 @@ bool Texture::loadFromFile(const std::string &path)
         mWidth = 0;
         mHeight = 0;
     }
-
-    bool success {true};
 
     SDL_Surface* loadedSurface {IMG_Load(path.c_str())};
     if (loadedSurface == nullptr)
     {
-        std::cerr << "IMG_Load error: " << IMG_GetError() << std::endl;
-        success = false;
+        std::string err {IMG_GetError()};
+        throw std::runtime_error("Texture::loadFromFile error: " + err);
     }
-    else
+
+    mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), loadedSurface));
+    if (mTexture == nullptr)
     {
-        mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), loadedSurface));
-        if (mTexture == nullptr)
-        {
-            std::cerr << "SDL_CreateTextureFromSurface error: " << SDL_GetError() << std::endl;
-            success = false;
-        }
-        else
-        {
-            mWidth = loadedSurface->w;
-            mHeight = loadedSurface->h;
-        }
-
-        SDL_FreeSurface(loadedSurface);
+        std::string err {IMG_GetError()};
+        throw std::runtime_error("Texture::loadFromFile error: " + err);
     }
 
-    return success;
+    mWidth = loadedSurface->w;
+    mHeight = loadedSurface->h;
+
+    SDL_FreeSurface(loadedSurface);
 }
 
-bool Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, SDL_Color textColor)
+void Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, SDL_Color textColor)
 {
     assert(texRenderer);
 
@@ -66,32 +58,24 @@ bool Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, 
         mHeight = 0;
     }
 
-    bool success {true};
-
     SDL_Surface* textSurface = TTF_RenderText_Solid(textFont, text.c_str(), textColor);
     if (textSurface == nullptr)
     {
-        std::cerr <<  "TTF_RenderText_Solid error: " << TTF_GetError() << std::endl;
-        success = false;
+        std::string err {TTF_GetError()};
+        throw std::runtime_error("Texture::loadFromRenderedText error: " + err);
     }
-    else
+
+    mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), textSurface));
+    if (mTexture == nullptr)
     {
-        mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), textSurface));
-        if (mTexture == nullptr)
-        {
-            std::cerr << "SDL_CreateTextureFromSurface error: " << SDL_GetError() << std::endl;
-            success = false;
-        }
-        else
-        {
-            mWidth = textSurface->w;
-            mHeight = textSurface->h;
-        }
-
-        SDL_FreeSurface(textSurface);
+        std::string err {SDL_GetError()};
+        throw std::runtime_error("Texture::loadFromRenderedText error: " + err);
     }
 
-    return success;
+    mWidth = textSurface->w;
+    mHeight = textSurface->h;
+
+    SDL_FreeSurface(textSurface);
 }
 
 void Texture::render(int xPos, int yPos, SDL_Rect* clip)

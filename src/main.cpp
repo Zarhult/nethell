@@ -5,7 +5,6 @@
 #include "SDL2/SDL_ttf.h"
 #include <iostream>
 
-// TODO: replace things like Texture::loadFromFile return codes with exception throwing
 // TODO: wrapper around font that closes itself when out of scope (remove function from Game destructor after)
 
 int main() 
@@ -16,19 +15,17 @@ int main()
         const int winHeight     {1080};
 
         Game gameObj(winWidth, winHeight);
-        if (gameObj.loadSpriteSheet("sprites/wizard.png", true, 120, 120, 2, 1))
+        gameObj.loadSpriteSheet("sprites/wizard.png", true, 120, 120, 2, 1);
+        gameObj.newEntity(PLAYER, PLAYER_IDLE);
+        gameObj.getEntity(0)->toggleSprite();
+        gameObj.getEntity(0)->moveSprite(0, 0);
+
+        while (gameObj.getRunStatus())
         {
-            gameObj.newEntity(PLAYER, PLAYER_IDLE);
-            gameObj.getEntity(0)->toggleSprite();
-            gameObj.getEntity(0)->moveSprite(0, 0);
+            gameObj.eventHandle();
+            gameObj.render();
 
-            while (gameObj.getRunStatus())
-            {
-                gameObj.eventHandle();
-                gameObj.render();
-
-                SDL_Delay(100);
-            }
+            SDL_Delay(100);
         }
     }
     catch(std::runtime_error &exception)

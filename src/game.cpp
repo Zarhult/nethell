@@ -58,22 +58,12 @@ Game::~Game()
     TTF_CloseFont(mGameFont);
 }
 
-bool Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
+void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
 {
     SpriteSheet::SpriteSheetShPtr spriteSheet {std::make_shared<SpriteSheet>(mRenderer, isAnimation, spriteWidth, spriteHeight, 
                                                                              spritesX, spritesY)};
-    bool success {spriteSheet->loadFromFile(path)};
-
-    if (success)
-    {
-        mSpriteSheetVec.push_back(std::move(spriteSheet));
-    }
-    else
-    {
-        std::cerr << "Failed to load texture file into sprite sheet." << std::endl;
-    }
-
-    return success;
+    spriteSheet->loadFromFile(path);
+    mSpriteSheetVec.push_back(std::move(spriteSheet));
 }
 
 void Game::eventHandle()

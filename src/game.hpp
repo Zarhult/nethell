@@ -23,7 +23,7 @@ class Game
 
         // Sprite sheets contain each frame of an animation for a single entity, or a
         // sheet of various static sprites, but never a combination.
-        bool loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY);
+        void loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY);
         void eventHandle(); // Process an event
         void render();      // Render all onscreen sprites
         void newEntity(SpriteName name, int startingSprite); // Create a new entity with given sprite (added to entity vector)
