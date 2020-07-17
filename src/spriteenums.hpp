@@ -3,17 +3,15 @@
 #ifndef SPRITEENUMS_HPP
 #define SPRITEENUMS_HPP
 
-// First comes all animated sprites, followed by an enum for each sheet of static sprites. Static sprites can easily be set to any sprite in
-//	their respective sprite sheet with the changeSprite function.
-// Matches order of sprites in sprite sheet, starting from 0.
+// First comes each animated sprite sheet, followed by each sheet of static sprites.
+// Matches order that each sprite sheet is loaded in main.
 enum SpriteName
 {
     PLAYER
 };
 
 // The rest of the enumerations define the frames of a sprite's animation(s) or the elements of a static sprite sheet, 0 being the first 
-//	sprite of its sprite sheet, 1 the next, etc.
-// Should only be used as the second argument in the changeSprite function.
+// sprite of its sprite sheet, 1 the next, etc. The enums are defined in the same order as the sprite sheets above.
 enum SpritePlayerFrames
 {
     PLAYER_IDLE,

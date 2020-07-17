@@ -12,15 +12,18 @@ class SpriteSheet : public Texture
         using SpriteSheetShPtr = std::shared_ptr<SpriteSheet>;
 
     public:
-        SpriteSheet(sdlw::RendererShPtr texRenderer, int spriteWidth, int spriteHeight, int spritesX, int spritesY) 
-            : Texture(texRenderer), mSpriteWidth(spriteWidth), mSpriteHeight(spriteHeight), mSpritesX(spritesX), mSpritesY(spritesY) {} 
+        SpriteSheet(sdlw::RendererShPtr texRenderer, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY) 
+            : Texture(texRenderer), mIsAnimation(isAnimation), mSpriteWidth(spriteWidth), mSpriteHeight(spriteHeight), 
+              mSpritesX(spritesX), mSpritesY(spritesY) {} 
 
-        int getSpriteWidth()  const;
-        int getSpriteHeight() const;
-        int getSpritesX()     const;
-        int getSpritesY()     const;
+        bool isAnimation()    const;
+        int getSpriteWidth()    const;
+        int getSpriteHeight()   const;
+        int getSpritesX()       const;
+        int getSpritesY()       const;
 
     private:
+        bool mIsAnimation    {false}; // Whether this is a sheet of animation frames, or various static sprites
         int mSpriteWidth    {0};
         int mSpriteHeight   {0};
         int mSpritesX	    {0};

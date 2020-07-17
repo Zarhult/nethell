@@ -5,6 +5,9 @@
 #include "SDL2/SDL_ttf.h"
 #include <iostream>
 
+// TODO: replace things like Texture::loadFromFile return codes with exception throwing
+// TODO: wrapper around font that closes itself when out of scope (remove function from Game destructor after)
+
 int main() 
 {
     try
@@ -13,10 +16,11 @@ int main()
         const int winHeight	    {1080};
 
         Game gameObj(winWidth, winHeight);
-        if (gameObj.loadSpriteSheet("sprites/wizard.png", 120, 120, 2, 1))
+        if (gameObj.loadSpriteSheet("sprites/wizard.png", true, 120, 120, 2, 1))
         {
-            gameObj.toggleSprite(PLAYER);
-            gameObj.moveSprite(PLAYER, 0, 0);
+            gameObj.newEntity(PLAYER, PLAYER_IDLE);
+            gameObj.getEntity(0)->toggleSprite();
+            gameObj.getEntity(0)->moveSprite(0, 0);
 
             while (gameObj.getRunStatus())
             {

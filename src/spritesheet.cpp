@@ -2,6 +2,13 @@
 #include "SDL2/SDL.h"
 #include <assert.h>
 
+bool SpriteSheet::isAnimation() const
+{
+    assert(this);
+
+    return this->mIsAnimation;
+}
+
 int SpriteSheet::getSpriteWidth() const
 {
     assert(this);

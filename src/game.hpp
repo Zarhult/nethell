@@ -2,7 +2,8 @@
 #define GAME_HPP
 
 #include "spritesheet.hpp"
-#include "sprite.hpp"
+#include "spriteenums.hpp"
+#include "entity.hpp"
 #include "sdlw.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_ttf.h"
@@ -22,28 +23,22 @@ class Game
 
         // Sprite sheets contain each frame of an animation for a single entity, or a
         // sheet of various static sprites, but never a combination.
-        bool loadSpriteSheet(const std::string &path, int spriteWidth, int spriteHeight, int spritesX, int spritesY);
+        bool loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY);
         void eventHandle(); // Process an event
         void render();		// Render all onscreen sprites
-        void moveSprite(int spriteVecPos, int xPos, int yPos); // Set a sprite's x and y positions
-        void changeSprite(int spriteVecPos, int newSpriteNum); /* Change sprite number with respect to its sprite sheet
-                                                                  (useful for rendering animation) */
-        void toggleSprite(int spriteVecPos); // Toggle sprite rendering - sprites are considered offscreen when first created
+        void newEntity(SpriteName name, int startingSprite); // Create a new entity with given sprite (added to entity vector)
 
         /* Accessors */
 
-        int getSpriteNum(int spriteVecPos)          const;
-        int getSpriteXPos(int spriteVecPos)	        const;
-        int getSpriteYPos(int spriteVecPos)	        const;
-        bool getSpriteIsOnscreen(int spriteVecPos)  const;
-        bool getRunStatus()                         const;
+        Entity::EntityShPtr getEntity(int entityVecPos) const;
+        bool getRunStatus() const;
 
     private:
         // ...ShPtr types defined for all shared pointer wrappers used in game class
         sdlw::WindowShPtr mWindow {nullptr};
         sdlw::RendererShPtr mRenderer {nullptr};
         std::vector<SpriteSheet::SpriteSheetShPtr> mSpriteSheetVec;
-        std::vector<Sprite::SpriteShPtr> mSpriteVec; 
+        std::vector<Entity::EntityShPtr> mEntityVec;
         SDL_Event mEvent;
         TTF_Font* mGameFont;
 

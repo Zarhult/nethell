@@ -55,13 +55,13 @@ Game::Game(int winWidth, int winHeight)
 
 Game::~Game()
 {
-    // TODO: wrapper around font that closes itself when out of scope
     TTF_CloseFont(mGameFont);
 }
 
-bool Game::loadSpriteSheet(const std::string &path, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
+bool Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
 {
-    SpriteSheet::SpriteSheetShPtr spriteSheet {std::make_shared<SpriteSheet>(mRenderer, spriteWidth, spriteHeight, spritesX, spritesY)};
+    SpriteSheet::SpriteSheetShPtr spriteSheet {std::make_shared<SpriteSheet>(mRenderer, isAnimation, spriteWidth, spriteHeight, 
+                                                                             spritesX, spritesY)};
     bool success {spriteSheet->loadFromFile(path)};
 
     if (success)
@@ -80,13 +80,13 @@ void Game::eventHandle()
 {
     SDL_PollEvent(&mEvent);
 
-    if (mSpriteVec.at(PLAYER)->getSpriteNum() == PLAYER_WALK)
+    if (mEntityVec.at(PLAYER)->getSpriteNum() == PLAYER_WALK)
     {
-        mSpriteVec.at(PLAYER)->setSpriteNum(PLAYER_IDLE);
+        mEntityVec.at(PLAYER)->changeSprite(PLAYER_IDLE);
     }
     else
     {
-        mSpriteVec.at(PLAYER)->setSpriteNum(PLAYER_WALK);
+        mEntityVec.at(PLAYER)->changeSprite(PLAYER_WALK);
     }
 
     if (mEvent.type == SDL_QUIT)
@@ -99,71 +99,36 @@ void Game::render()
 {
     SDL_RenderClear(mRenderer.get());
 
-    for (unsigned i = 0; i < mSpriteVec.size(); ++i)
+    for (unsigned i = 0; i < mEntityVec.size(); ++i)
     {
-        assert(mSpriteVec.at(i));
+        assert(mEntityVec.at(i));
 
-        if (mSpriteVec.at(i)->isOnscreen())
+        if (mEntityVec.at(i)->isOnscreen())
         {
-            mSpriteVec.at(i)->render();
+            mEntityVec.at(i)->render();
         }
     }
 
     SDL_RenderPresent(mRenderer.get());
 }
 
-void Game::moveSprite(int spriteVecPos, int xPos, int yPos)
+void Game::newEntity(SpriteName name, int startingSprite)
 {
-    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
+    if (mSpriteSheetVec.at(name)->isAnimation() == true) {
+        Sprite::SpriteShPtr sprite {std::make_shared<Sprite>(mSpriteSheetVec.at(name), startingSprite)};
+        Entity::EntityShPtr entity {std::make_shared<Entity>(sprite)}; 
 
-    mSpriteVec.at(spriteVecPos)->setXY(xPos, yPos);
+        mEntityVec.push_back(std::move(entity));
+    } else {
+        throw std::runtime_error("Attempted to create entity from unanimated sprite sheet");
+    }
 }
 
-void Game::changeSprite(int spriteVecPos, int newSpriteNum)
-{
-    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
-    // TODO: assert that newSpriteNum is within bounds of the spritesheet associated with sprite
-
-    mSpriteVec.at(spriteVecPos)->setSpriteNum(newSpriteNum);
-}
-
-void Game::toggleSprite(int spriteVecPos)
-{
-    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
-
-    mSpriteVec.at(spriteVecPos)->toggleOnscreen();
-}
-
-int Game::getSpriteNum(int spriteVecPos) const
+Entity::EntityShPtr Game::getEntity(int entityVecPos) const
 {
     assert(this);
-    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
 
-    return mSpriteVec.at(spriteVecPos)->getSpriteNum();
-}
-
-int Game::getSpriteXPos(int spriteVecPos) const
-{
-    assert(this);
-    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
-
-    return mSpriteVec.at(spriteVecPos)->getXPos();
-}
-
-int Game::getSpriteYPos(int spriteVecPos) const
-{
-    assert(this);
-    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
-
-    return mSpriteVec.at(spriteVecPos)->getYPos();
-}
-
-bool Game::getSpriteIsOnscreen(int spriteVecPos) const
-{
-    assert(this);
-    assert(static_cast<unsigned>(spriteVecPos) < mSpriteVec.size());
-
-    return mSpriteVec.at(spriteVecPos)->isOnscreen();
+    return mEntityVec.at(entityVecPos);
 }
 
 bool Game::getRunStatus() const
