@@ -43,7 +43,7 @@ Game::Game(int winWidth, int winHeight)
     }
 
     // Set game font    
-    mGameFont = TTF_OpenFont("/usr/share/fonts/liberation/LiberationSans-Regular.ttf", 16);
+    mGameFont.reset(TTF_OpenFont("/usr/share/fonts/liberation/LiberationSans-Regular.ttf", 16));
     if (mGameFont == nullptr)
     {
         throw std::runtime_error(TTF_GetError());
@@ -51,11 +51,6 @@ Game::Game(int winWidth, int winHeight)
 
     // If all initialized successfully...
     mIsRunning = true;
-}
-
-Game::~Game()
-{
-    TTF_CloseFont(mGameFont);
 }
 
 void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY)

@@ -4,6 +4,7 @@
 #ifndef SDLW_HPP
 #define SDLW_HPP
 
+#include "SDL2/SDL_ttf.h"
 #include "SDL2/SDL.h"
 #include <memory>
 
@@ -16,6 +17,7 @@ namespace sdlw
         void operator() (SDL_Renderer*  renderer)   const { if (renderer)   { SDL_DestroyRenderer(renderer);    } }
         void operator() (SDL_Surface*   surface)    const { if (surface)    { SDL_FreeSurface(surface);	        } }
         void operator() (SDL_RWops*     rwops)      const { if (rwops)	    { SDL_RWclose(rwops);               } }
+        void operator() (TTF_Font*      font)       const { if (font)	    { TTF_CloseFont(font);              } }
     };
 
     template<class T, class D = std::default_delete<T>>
@@ -29,11 +31,12 @@ namespace sdlw
         }
     };
 
-    using WindowShPtr   = shared_ptr_sdl_deleter<SDL_Window,   SDL_Deleter>;
-    using TextureShPtr  = shared_ptr_sdl_deleter<SDL_Texture,  SDL_Deleter>;
-    using RendererShPtr = shared_ptr_sdl_deleter<SDL_Renderer, SDL_Deleter>;
-    using SurfaceShPtr  = shared_ptr_sdl_deleter<SDL_Surface,  SDL_Deleter>;
-    using RWopsShPtr    = shared_ptr_sdl_deleter<SDL_RWops,    SDL_Deleter>;
+    using WindowShPtr   = shared_ptr_sdl_deleter<SDL_Window,    SDL_Deleter>;
+    using TextureShPtr  = shared_ptr_sdl_deleter<SDL_Texture,   SDL_Deleter>;
+    using RendererShPtr = shared_ptr_sdl_deleter<SDL_Renderer,  SDL_Deleter>;
+    using SurfaceShPtr  = shared_ptr_sdl_deleter<SDL_Surface,   SDL_Deleter>;
+    using RWopsShPtr    = shared_ptr_sdl_deleter<SDL_RWops,     SDL_Deleter>;
+    using FontShPtr     = shared_ptr_sdl_deleter<TTF_Font,      SDL_Deleter>;
 }
 
 #endif

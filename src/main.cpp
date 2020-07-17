@@ -5,8 +5,6 @@
 #include "SDL2/SDL_ttf.h"
 #include <iostream>
 
-// TODO: wrapper around font that closes itself when out of scope (remove function from Game destructor after)
-
 int main() 
 {
     try

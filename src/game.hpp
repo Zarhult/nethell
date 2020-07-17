@@ -17,7 +17,6 @@ class Game
         Game(int winWidth, int winHeight);
         Game(const Game&) = delete;
         Game& operator=(const Game&) = delete;
-        ~Game();
 
         /* Game Functions */
 
@@ -38,8 +37,8 @@ class Game
         sdlw::RendererShPtr mRenderer {nullptr};
         std::vector<SpriteSheet::SpriteSheetShPtr> mSpriteSheetVec;
         std::vector<Entity::EntityShPtr> mEntityVec;
+        sdlw::FontShPtr mGameFont;
         SDL_Event mEvent;
-        TTF_Font* mGameFont;
 
         bool mIsRunning {false};
 };
