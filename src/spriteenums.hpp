@@ -7,16 +7,15 @@
 // Matches order that each sprite sheet is loaded in main.
 enum SpriteName
 {
-	PLAYER
+    PLAYER
 };
 
 // The rest of the enumerations define the frames of a sprite's animation(s) or the elements of a static sprite sheet, 0 being the first 
 // sprite of its sprite sheet, 1 the next, etc. The enums are defined in the same order as the sprite sheets above.
 enum SpritePlayerFrames
 {
-	PLAYER_IDLE,
-	PLAYER_WALK
+    PLAYER_IDLE,
+    PLAYER_WALK
 };
 
 #endif
-

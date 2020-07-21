@@ -3,25 +3,25 @@
 
 bool SpriteSheet::isAnimation() const
 {
-	return this->mIsAnimation;
+    return this->mIsAnimation;
 }
 
 int SpriteSheet::getSpriteWidth() const
 {
-	return this->mSpriteWidth;
+    return this->mSpriteWidth;
 }
 
 int SpriteSheet::getSpriteHeight() const
 {
-	return this->mSpriteHeight;
+    return this->mSpriteHeight;
 }
 
 int SpriteSheet::getSpritesX() const
 {
-	return this->mSpritesX;
+    return this->mSpritesX;
 }
 
 int SpriteSheet::getSpritesY() const
 {
-	return this->mSpritesY;
+    return this->mSpritesY;
 }
