@@ -17,7 +17,6 @@ public:
     Game(int winWidth, int winHeight);
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
-    ~Game();
     
     /* Game Functions */
     
@@ -48,7 +47,7 @@ private:
     sdlw::FontShPtr mGameFont;
     SDL_Event mEvent;
     const Uint32 mFrameStep {1000/144}; // 144 fps, time per frame in ms
-    Uint32 mNextFrame {SDL_GetTicks()}; // time of the next frame, handled in main
+    Uint32 mNextFrame {SDL_GetTicks()}; // Time of the next frame, handled in main
     
     bool mIsRunning {false};
 };

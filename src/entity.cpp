@@ -5,9 +5,19 @@ void Entity::render()
     this->mSpritePtr->render();
 }
 
-void Entity::moveSprite(int xPos, int yPos)
+void Entity::shiftSprite(int xPos, int yPos)
 {
-    this->mSpritePtr->setXY(xPos, yPos);
+    this->mSpritePtr->shiftXY(xPos, yPos);
+}
+
+void Entity::setSpriteAngle(double angle)
+{
+    this->mSpritePtr->setAngle(angle);
+}
+
+void Entity::setSpriteFlipType(SDL_RendererFlip flipType)
+{
+    this->mSpritePtr->setFlipType(flipType);
 }
 
 void Entity::changeSprite(int newSpriteNum)
@@ -18,7 +28,6 @@ void Entity::changeSprite(int newSpriteNum)
 void Entity::toggleSprite()
 {
     this->mSpritePtr->toggleOnscreen();
-
 }
 
 int Entity::getSpriteNum() const

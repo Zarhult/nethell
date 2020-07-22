@@ -15,18 +15,24 @@ public:
     
     void render();
     
-    void setXY(int x, int y);
+    void shiftXY(int x, int y);
+    void setAngle(double angle);
+    void setFlipType(SDL_RendererFlip flipType);
     void setSpriteNum(int spriteNum);
     void toggleOnscreen();
     
-    int getSpriteNum() const;
-    int getXPos()      const;
-    int getYPos()      const;
-    bool isOnscreen()  const;
+    int getSpriteNum()             const;
+    int getXPos()                  const;
+    int getYPos()                  const;
+    double getAngle()              const;
+    SDL_RendererFlip getFlipType() const;
+    bool isOnscreen()              const;
     
 private:
     SpriteSheet::SpriteSheetShPtr mSpriteSheetPtr {nullptr};    // Pointer to sprite sheet associated with this sprite
     int mSpriteNum {0};                                         // Its number in the sprite sheet
+    double mAngle {0.0};
+    SDL_RendererFlip mFlipType {SDL_FLIP_NONE};
     int mXPos {0};
     int mYPos {0};
     bool mIsOnscreen {false};

@@ -49,15 +49,15 @@ Game::Game(int winWidth, int winHeight)
         throw std::runtime_error(TTF_GetError());
     }
 
+    // Populate mSpriteSheetVec
+    this->loadSpriteSheet("sprites/wizard.png", true, 120, 120, 2, 1);
+
+    // Set up starting entities
+    this->newEntity(PLAYER, PLAYER_IDLE);
+    this->getEntity(PLAYER)->toggleSprite(); // Default position is (0, 0), so no need to set it
+
     // If all initialized successfully...
     mIsRunning = true;
-}
-
-Game::~Game()
-{
-    TTF_Quit();
-    IMG_Quit();
-    SDL_Quit(); 
 }
 
 void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
@@ -70,20 +70,9 @@ void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int sprite
 
 void Game::eventHandle()
 {
+    // does this need to be a while (SDL_PollEvent(&mEvent) != 0) ?
     SDL_PollEvent(&mEvent);
     
-    // this will later be dependent on events of where player is moving, etc
-    if (this->isNthFrame(36)) {
-        if (mEntityVec.at(0)->getSpriteNum() == PLAYER_WALK)
-        {
-            mEntityVec.at(0)->changeSprite(PLAYER_IDLE);
-        }
-        else
-        {
-            mEntityVec.at(0)->changeSprite(PLAYER_WALK);
-        }
-    }
-
     if (mEvent.type == SDL_QUIT)
     {
         mIsRunning = false;
@@ -95,6 +84,94 @@ void Game::eventHandle()
         SDL_GetMouseState(&x, &y);
         // stuff with mouse...
     }
+
+    // Get keyboard state to handle key events
+    const Uint8* keyboardState {SDL_GetKeyboardState(NULL)};
+
+    Entity::EntityShPtr player = mEntityVec.at(PLAYER);
+    // Animate player movement
+    if (keyboardState[SDL_SCANCODE_W] || keyboardState[SDL_SCANCODE_A] || keyboardState[SDL_SCANCODE_S] || keyboardState[SDL_SCANCODE_D])
+    {
+        if (this->isNthFrame(36))
+        {
+            if (player->getSpriteNum() == PLAYER_WALK)
+            {
+                player->changeSprite(PLAYER_IDLE);
+            }
+            else
+            {
+                player->changeSprite(PLAYER_WALK);
+            }
+        }
+    }
+    else
+    {
+        player->changeSprite(PLAYER_IDLE);
+    }
+    
+    // Move player
+    if (keyboardState[SDL_SCANCODE_W])
+    {
+        player->shiftSprite(0, -5);
+    }
+    else if (keyboardState[SDL_SCANCODE_A])
+    {
+        player->shiftSprite(-5, 0);
+        player->setSpriteFlipType(SDL_FLIP_HORIZONTAL);
+    }
+    else if (keyboardState[SDL_SCANCODE_S])
+    {
+        player->shiftSprite(0, 5);
+    }
+    else if (keyboardState[SDL_SCANCODE_D])
+    {
+        player->shiftSprite(5, 0);
+        player->setSpriteFlipType(SDL_FLIP_NONE);
+    }
+    
+    /*
+    if (mEvent.type == SDL_KEYDOWN)
+    {
+        SDL_Keycode keycode = mEvent.key.keysym.sym;
+        if (keycode == SDLK_w || keycode == SDLK_a || keycode == SDLK_s || keycode == SDLK_d)
+        {
+            if (this->isNthFrame(36))
+            {
+                if (mEntityVec.at(0)->getSpriteNum() == PLAYER_WALK)
+                {
+                    mEntityVec.at(0)->changeSprite(PLAYER_IDLE);
+                }
+                else
+                {
+                    mEntityVec.at(0)->changeSprite(PLAYER_WALK);
+                }
+            }
+            
+            switch(mEvent.key.keysym.sym)
+            {
+            case SDLK_w:
+                mEntityVec.at(PLAYER)->shiftSprite(0, -10);
+                break;
+
+            case SDLK_a:
+                mEntityVec.at(PLAYER)->shiftSprite(-10, 0);
+                break;
+
+            case SDLK_s:
+                mEntityVec.at(PLAYER)->shiftSprite(0, 10);
+                break;
+
+            case SDLK_d:
+                mEntityVec.at(PLAYER)->shiftSprite(10, 0);
+                break;
+
+            default:
+                break;
+
+            }
+        }
+    }
+    */
 }
 
 void Game::render()

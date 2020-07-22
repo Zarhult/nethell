@@ -13,10 +13,6 @@ int main()
         const int winHeight     {1080};
 
         Game gameObj(winWidth, winHeight);
-        gameObj.loadSpriteSheet("sprites/wizard.png", true, 120, 120, 2, 1);
-        gameObj.newEntity(PLAYER, PLAYER_IDLE);
-        gameObj.getEntity(0)->toggleSprite();
-        gameObj.getEntity(0)->moveSprite(0, 0);
 
         gameObj.setNextFrame(SDL_GetTicks());
         while (gameObj.isRunning())
@@ -46,6 +42,10 @@ int main()
     {
         std::cerr << "An uncaught exception occurred." << std::endl;
     }
+
+    TTF_Quit();
+    IMG_Quit();
+    SDL_Quit(); 
 
     return 0;
 }

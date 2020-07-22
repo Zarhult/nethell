@@ -71,7 +71,7 @@ void Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, 
     SDL_FreeSurface(textSurface);
 }
 
-void Texture::render(int xPos, int yPos, SDL_Rect* clip)
+void Texture::render(int xPos, int yPos, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
     assert(texRenderer);
 
@@ -83,7 +83,7 @@ void Texture::render(int xPos, int yPos, SDL_Rect* clip)
         renderArea.h = clip->h;
     }
 
-    SDL_RenderCopy(texRenderer.get(), mTexture.get(), clip, &renderArea);
+    SDL_RenderCopyEx(texRenderer.get(), mTexture.get(), clip, &renderArea, angle, center, flip);
 }
 
 int Texture::getWidth() const

@@ -4,6 +4,9 @@
 #include "sprite.hpp"
 #include <memory>
 
+//TODO: don't use redundant functions, have a function that returns the sprite pointer and use the sprite functions directly
+// fix this anywhere else it's done
+
 class Entity
 {
 public:
@@ -13,7 +16,9 @@ public:
     Entity(Sprite::SpriteShPtr spritePtr) : mSpritePtr(spritePtr) {};
     
     void render();
-    void moveSprite(int xPos, int yPos); // Set the sprite's x and y positions
+    void shiftSprite(int xPos, int yPos); // Adjust the sprite's x and y positions
+    void setSpriteAngle(double angle);
+    void setSpriteFlipType(SDL_RendererFlip flipType);
     void changeSprite(int newSpriteNum); /* Change entity's sprite number with respect to its sprite sheet 
                                             (useful for rendering animations) */
     void toggleSprite(); // Toggle sprite visibility
