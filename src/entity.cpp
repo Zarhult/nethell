@@ -1,53 +1,14 @@
 #include "entity.hpp"
+#include "sprite.hpp"
 
-void Entity::render()
+Sprite::SpriteShPtr Entity::getSprite() const
 {
-    this->mSpritePtr->render();
+    return this->mSpritePtr;
 }
 
-void Entity::shiftSprite(int xPos, int yPos)
+void Entity::setState(EntityState state)
 {
-    this->mSpritePtr->shiftXY(xPos, yPos);
-}
-
-void Entity::setSpriteAngle(double angle)
-{
-    this->mSpritePtr->setAngle(angle);
-}
-
-void Entity::setSpriteFlipType(SDL_RendererFlip flipType)
-{
-    this->mSpritePtr->setFlipType(flipType);
-}
-
-void Entity::changeSprite(int newSpriteNum)
-{
-    this->mSpritePtr->setSpriteNum(newSpriteNum);
-}
-
-void Entity::toggleSprite()
-{
-    this->mSpritePtr->toggleOnscreen();
-}
-
-int Entity::getSpriteNum() const
-{
-    return this->mSpritePtr->getSpriteNum();
-}
-
-int Entity::getSpriteXPos() const
-{
-    return this->mSpritePtr->getXPos();
-}
-
-int Entity::getSpriteYPos() const
-{
-    return this->mSpritePtr->getYPos();
-}
-
-int Entity::isOnscreen() const
-{
-    return this->mSpritePtr->isOnscreen();
+    mState = state;
 }
 
 int Entity::getMaxHP() const

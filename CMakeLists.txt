@@ -11,6 +11,7 @@ add_executable(${PROJECT_NAME}
     src/spritesheet.cpp
     src/sprite.cpp
     src/entity.cpp
+    src/player.cpp
 )
 
 include(FindPkgConfig)

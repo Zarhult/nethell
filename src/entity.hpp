@@ -4,9 +4,12 @@
 #include "sprite.hpp"
 #include <memory>
 
-//TODO: don't use redundant functions, have a function that returns the sprite pointer and use the sprite functions directly
-// fix this anywhere else it's done
-
+enum EntityState
+{
+    ENTITY_IDLE,
+    ENTITY_WALKING
+};
+    
 class Entity
 {
 public:
@@ -14,26 +17,20 @@ public:
     
 public:
     Entity(Sprite::SpriteShPtr spritePtr) : mSpritePtr(spritePtr) {};
+    virtual void animate() = 0; // Progress animation depending on the entity's state
+    void setState(EntityState state);
+
+    Sprite::SpriteShPtr getSprite() const;
+    int getMaxHP() const;
+    int getHP()    const;
     
-    void render();
-    void shiftSprite(int xPos, int yPos); // Adjust the sprite's x and y positions
-    void setSpriteAngle(double angle);
-    void setSpriteFlipType(SDL_RendererFlip flipType);
-    void changeSprite(int newSpriteNum); /* Change entity's sprite number with respect to its sprite sheet 
-                                            (useful for rendering animations) */
-    void toggleSprite(); // Toggle sprite visibility
-    
-    int getSpriteNum()  const;
-    int getSpriteXPos() const;
-    int getSpriteYPos() const;
-    int isOnscreen()    const;
-    int getMaxHP()      const;
-    int getHP()         const;
-    
-private:
+protected:
     Sprite::SpriteShPtr mSpritePtr {nullptr}; // Pointer to entity's sprite
+    EntityState mState {ENTITY_IDLE};
     int maxHP; // Add stats here...
     int HP;
 };
 
 #endif
+
+// there is no entity without 4 corners

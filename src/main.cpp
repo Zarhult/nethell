@@ -14,21 +14,27 @@ int main()
 
         Game gameObj(winWidth, winHeight);
 
-        gameObj.setNextFrame(SDL_GetTicks());
+        // Cap framerate and game processing at the game's FPS
+        Uint32 frameStart;
+        Uint32 frameTime;
         while (gameObj.isRunning())
         {
-            Uint32 now {SDL_GetTicks()};
-            int limit {10}; // Max steps per render
+            frameStart = SDL_GetTicks();
 
-            // Assuming vsync is on, so no need to delay
-            while (gameObj.getNextFrame() <= now && (limit--))
-            {
-                gameObj.eventHandle();
-                gameObj.setNextFrame(gameObj.getNextFrame() + gameObj.getFrameStep());
-            }
-
+            gameObj.eventHandle();
+            gameObj.step();
             gameObj.render();
+
+            frameTime = SDL_GetTicks() - frameStart;
+            if (frameTime < static_cast<Uint32>(gameObj.getTimeStep()))
+            {
+                SDL_Delay(gameObj.getTimeStep() - frameTime);
+            }
         }
+    }
+    catch(std::logic_error &exception)
+    {
+        std::cerr << "Logic error: " << exception.what() << std::endl;
     }
     catch(std::runtime_error &exception)
     {

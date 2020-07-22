@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "player.hpp"
 #include "spriteenums.hpp"
 #include "texture.hpp"
 #include "SDL2/SDL.h"
@@ -16,7 +17,8 @@ Game::Game(int winWidth, int winHeight)
         throw std::runtime_error(SDL_GetError());
     }
 
-    mWindow.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight, SDL_WINDOW_SHOWN));
+    mWindow.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight,
+                                   SDL_WINDOW_SHOWN));
     if (mWindow == nullptr) 
     {
         throw std::runtime_error(SDL_GetError());
@@ -54,13 +56,14 @@ Game::Game(int winWidth, int winHeight)
 
     // Set up starting entities
     this->newEntity(PLAYER, PLAYER_IDLE);
-    this->getEntity(PLAYER)->toggleSprite(); // Default position is (0, 0), so no need to set it
+    this->getEntity(PLAYER)->getSprite()->toggleOnscreen(); // Default position is (0, 0), so no need to set it
 
     // If all initialized successfully...
     mIsRunning = true;
 }
 
-void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY)
+void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX,
+                           int spritesY)
 {
     SpriteSheet::SpriteSheetShPtr spriteSheet {std::make_shared<SpriteSheet>(mRenderer, isAnimation, spriteWidth, spriteHeight, 
                                                                              spritesX, spritesY)};
@@ -70,7 +73,6 @@ void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int sprite
 
 void Game::eventHandle()
 {
-    // does this need to be a while (SDL_PollEvent(&mEvent) != 0) ?
     SDL_PollEvent(&mEvent);
     
     if (mEvent.type == SDL_QUIT)
@@ -87,91 +89,53 @@ void Game::eventHandle()
 
     // Get keyboard state to handle key events
     const Uint8* keyboardState {SDL_GetKeyboardState(NULL)};
-
-    Entity::EntityShPtr player = mEntityVec.at(PLAYER);
-    // Animate player movement
-    if (keyboardState[SDL_SCANCODE_W] || keyboardState[SDL_SCANCODE_A] || keyboardState[SDL_SCANCODE_S] || keyboardState[SDL_SCANCODE_D])
+    
+    // If player is moving...
+    if (keyboardState[SDL_SCANCODE_W] || keyboardState[SDL_SCANCODE_A] || keyboardState[SDL_SCANCODE_S] ||
+        keyboardState[SDL_SCANCODE_D])
     {
-        if (this->isNthFrame(36))
+        mEntityVec.at(PLAYER)->setState(ENTITY_WALKING);
+        
+        Sprite::SpriteShPtr plyrSprite = mEntityVec.at(PLAYER)->getSprite();
+        if (keyboardState[SDL_SCANCODE_W])
         {
-            if (player->getSpriteNum() == PLAYER_WALK)
-            {
-                player->changeSprite(PLAYER_IDLE);
-            }
-            else
-            {
-                player->changeSprite(PLAYER_WALK);
-            }
+            plyrSprite->shiftXY(0, -10);
+        }
+        else if (keyboardState[SDL_SCANCODE_A])
+        {
+            plyrSprite->shiftXY(-10, 0);
+            plyrSprite->setFlipType(SDL_FLIP_HORIZONTAL);
+        }
+        else if (keyboardState[SDL_SCANCODE_S])
+        {
+            plyrSprite->shiftXY(0, 10);
+        }
+        else if (keyboardState[SDL_SCANCODE_D])
+        {
+            plyrSprite->shiftXY(10, 0);
+            plyrSprite->setFlipType(SDL_FLIP_NONE);
         }
     }
     else
     {
-        player->changeSprite(PLAYER_IDLE);
+        mEntityVec.at(PLAYER)->setState(ENTITY_IDLE);
     }
-    
-    // Move player
-    if (keyboardState[SDL_SCANCODE_W])
+}
+
+void Game::step()
+{
+    // Progress all sprite animations once every 15 frames (0.25 s)
+    // Note that doing this with a number like 31 (doesn't evenly divide FPS) would not work as expected
+    for (unsigned i = 0; i < mEntityVec.size(); ++i)
     {
-        player->shiftSprite(0, -5);
-    }
-    else if (keyboardState[SDL_SCANCODE_A])
-    {
-        player->shiftSprite(-5, 0);
-        player->setSpriteFlipType(SDL_FLIP_HORIZONTAL);
-    }
-    else if (keyboardState[SDL_SCANCODE_S])
-    {
-        player->shiftSprite(0, 5);
-    }
-    else if (keyboardState[SDL_SCANCODE_D])
-    {
-        player->shiftSprite(5, 0);
-        player->setSpriteFlipType(SDL_FLIP_NONE);
-    }
-    
-    /*
-    if (mEvent.type == SDL_KEYDOWN)
-    {
-        SDL_Keycode keycode = mEvent.key.keysym.sym;
-        if (keycode == SDLK_w || keycode == SDLK_a || keycode == SDLK_s || keycode == SDLK_d)
+        if (mFrame % 15 == 0)
         {
-            if (this->isNthFrame(36))
-            {
-                if (mEntityVec.at(0)->getSpriteNum() == PLAYER_WALK)
-                {
-                    mEntityVec.at(0)->changeSprite(PLAYER_IDLE);
-                }
-                else
-                {
-                    mEntityVec.at(0)->changeSprite(PLAYER_WALK);
-                }
-            }
-            
-            switch(mEvent.key.keysym.sym)
-            {
-            case SDLK_w:
-                mEntityVec.at(PLAYER)->shiftSprite(0, -10);
-                break;
-
-            case SDLK_a:
-                mEntityVec.at(PLAYER)->shiftSprite(-10, 0);
-                break;
-
-            case SDLK_s:
-                mEntityVec.at(PLAYER)->shiftSprite(0, 10);
-                break;
-
-            case SDLK_d:
-                mEntityVec.at(PLAYER)->shiftSprite(10, 0);
-                break;
-
-            default:
-                break;
-
-            }
-        }
+            mEntityVec.at(i)->animate();
+        };
     }
-    */
+
+    // Update frame number
+    mFrame = (mFrame + 1) % mFPS;
 }
 
 void Game::render()
@@ -182,9 +146,10 @@ void Game::render()
     {
         assert(mEntityVec.at(i));
 
-        if (mEntityVec.at(i)->isOnscreen())
+        // Render all onscreen sprites
+        if (mEntityVec.at(i)->getSprite()->isOnscreen())
         {
-            mEntityVec.at(i)->render();
+            mEntityVec.at(i)->getSprite()->render();
         }
     }
 
@@ -195,17 +160,23 @@ void Game::newEntity(SpriteName name, int startingSprite)
 {
     if (mSpriteSheetVec.at(name)->isAnimation() == true) {
         Sprite::SpriteShPtr sprite {std::make_shared<Sprite>(mSpriteSheetVec.at(name), startingSprite)};
-        Entity::EntityShPtr entity {std::make_shared<Entity>(sprite)}; 
+        Entity::EntityShPtr entity {nullptr};
+        
+        switch(name)
+        {
+        case PLAYER:
+            entity = std::make_shared<Player>(sprite);
+            break;
+            
+        default:
+            throw std::logic_error("Attempted to create an entity without a valid sprite enum.");
+            break;
+        }
 
         mEntityVec.push_back(std::move(entity));
     } else {
-        throw std::runtime_error("Attempted to create entity from unanimated sprite sheet");
+        throw std::logic_error("Attempted to create entity from unanimated sprite sheet");
     }
-}
-
-void Game::setNextFrame(Uint32 val)
-{
-    mNextFrame = val;
 }
 
 Entity::EntityShPtr Game::getEntity(int entityVecPos) const
@@ -218,17 +189,12 @@ bool Game::isRunning() const
     return mIsRunning;
 }
 
-Uint32 Game::getFrameStep() const
+int Game::getTimeStep() const
 {
-    return mFrameStep;
+    return 1000 / mFPS;
 }
 
-Uint32 Game::getNextFrame() const
+int Game::getFrame() const
 {
-    return mNextFrame;
-}
-
-bool Game::isNthFrame(int n) const
-{
-    return (((mNextFrame / mFrameStep) % n) == 0);
+    return mFrame;
 }
