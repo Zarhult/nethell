@@ -44,8 +44,9 @@ private:
     std::vector<Entity::EntityShPtr> mEntityVec;
     sdlw::FontShPtr mGameFont;
     SDL_Event mEvent;
+    const Uint8 * mKeyboardState {SDL_GetKeyboardState(nullptr)};
     const int mFPS {60}; // Max FPS game will attempt to render
-    int mFrame {0}; // Current frame out of one second interval
+    int mFrame {1}; // Current frame (from 1 to FPS)
     
     bool mIsRunning {false};
 };

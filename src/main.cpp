@@ -9,26 +9,26 @@ int main()
 {
     try
     {
-        const int winWidth      {1920};
-        const int winHeight     {1080};
+        const int winWidth  {1920};
+        const int winHeight {1080};
 
-        Game gameObj(winWidth, winHeight);
+        Game game(winWidth, winHeight);
 
         // Cap framerate and game processing at the game's FPS
         Uint32 frameStart;
         Uint32 frameTime;
-        while (gameObj.isRunning())
+        while (game.isRunning())
         {
             frameStart = SDL_GetTicks();
 
-            gameObj.eventHandle();
-            gameObj.step();
-            gameObj.render();
+            game.eventHandle();
+            game.step();
+            game.render();
 
             frameTime = SDL_GetTicks() - frameStart;
-            if (frameTime < static_cast<Uint32>(gameObj.getTimeStep()))
+            if (frameTime < static_cast<Uint32>(game.getTimeStep()))
             {
-                SDL_Delay(gameObj.getTimeStep() - frameTime);
+                SDL_Delay(game.getTimeStep() - frameTime);
             }
         }
     }

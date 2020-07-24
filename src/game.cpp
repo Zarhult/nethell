@@ -73,80 +73,77 @@ void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int sprite
 
 void Game::eventHandle()
 {
-    SDL_PollEvent(&mEvent);
-    
-    if (mEvent.type == SDL_QUIT)
+    while(SDL_PollEvent(&mEvent))
     {
-        mIsRunning = false;
-    }
-
-    if (mEvent.type == SDL_MOUSEBUTTONDOWN)
-    {
-        int x, y;
-        SDL_GetMouseState(&x, &y);
-        // stuff with mouse...
-    }
-
-    // Get keyboard state to handle key events
-    const Uint8* keyboardState {SDL_GetKeyboardState(NULL)};
-    
-    // If player is moving...
-    if (keyboardState[SDL_SCANCODE_W] || keyboardState[SDL_SCANCODE_A] || keyboardState[SDL_SCANCODE_S] ||
-        keyboardState[SDL_SCANCODE_D])
-    {
-        mEntityVec.at(PLAYER)->setState(ENTITY_WALKING);
+        if (mEvent.type == SDL_QUIT)
+        {
+            mIsRunning = false;
+        }
         
-        Sprite::SpriteShPtr plyrSprite = mEntityVec.at(PLAYER)->getSprite();
-        if (keyboardState[SDL_SCANCODE_W])
+        if (mEvent.type == SDL_MOUSEBUTTONDOWN)
         {
-            plyrSprite->shiftXY(0, -10);
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            // stuff with mouse...
         }
-        else if (keyboardState[SDL_SCANCODE_A])
-        {
-            plyrSprite->shiftXY(-10, 0);
-            plyrSprite->setFlipType(SDL_FLIP_HORIZONTAL);
-        }
-        else if (keyboardState[SDL_SCANCODE_S])
-        {
-            plyrSprite->shiftXY(0, 10);
-        }
-        else if (keyboardState[SDL_SCANCODE_D])
-        {
-            plyrSprite->shiftXY(10, 0);
-            plyrSprite->setFlipType(SDL_FLIP_NONE);
-        }
-    }
-    else
-    {
-        mEntityVec.at(PLAYER)->setState(ENTITY_IDLE);
     }
 }
 
 void Game::step()
 {
     // Progress all sprite animations once every 15 frames (0.25 s)
-    // Note that doing this with a number like 31 (doesn't evenly divide FPS) would not work as expected
+    // Note that doing this with a number like 31 (doesn't evenly divide FPS) would not animate every 31 frames
     for (unsigned i = 0; i < mEntityVec.size(); ++i)
     {
-        if (mFrame % 15 == 0)
+        if (mFrame % 1 == 0)
         {
             mEntityVec.at(i)->animate();
-        };
+        }
     }
 
+    // If player is moving...
+    if (mKeyboardState[SDL_SCANCODE_W] || mKeyboardState[SDL_SCANCODE_A] || mKeyboardState[SDL_SCANCODE_S] ||
+        mKeyboardState[SDL_SCANCODE_D])
+    {
+        mEntityVec.at(PLAYER)->setState(ENTITY_WALKING);
+
+        Sprite::SpriteShPtr playerSprite = mEntityVec.at(PLAYER)->getSprite();
+        if (mKeyboardState[SDL_SCANCODE_W])
+        {
+            playerSprite->shiftXY(0, -10);
+            std::cout << mFrame << std::endl;
+        }
+        else if (mKeyboardState[SDL_SCANCODE_A])
+        {
+            playerSprite->shiftXY(-10, 0);
+            playerSprite->setFlipType(SDL_FLIP_HORIZONTAL);
+        }
+        else if (mKeyboardState[SDL_SCANCODE_S])
+        {
+            playerSprite->shiftXY(0, 10);
+        }
+        else if (mKeyboardState[SDL_SCANCODE_D])
+        {
+            playerSprite->shiftXY(10, 0);
+            playerSprite->setFlipType(SDL_FLIP_NONE);
+        }
+    }
+    else
+    {
+        mEntityVec.at(PLAYER)->setState(ENTITY_IDLE);
+    }
+    
     // Update frame number
-    mFrame = (mFrame + 1) % mFPS;
+    mFrame = (mFrame % mFPS) + 1;
 }
 
 void Game::render()
 {
     SDL_RenderClear(mRenderer.get());
 
+    // Render all onscreen sprites
     for (unsigned i = 0; i < mEntityVec.size(); ++i)
     {
-        assert(mEntityVec.at(i));
-
-        // Render all onscreen sprites
         if (mEntityVec.at(i)->getSprite()->isOnscreen())
         {
             mEntityVec.at(i)->getSprite()->render();
