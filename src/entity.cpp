@@ -3,7 +3,7 @@
 
 Sprite::SpriteShPtr Entity::getSprite() const
 {
-    return this->mSpritePtr;
+    return mSpritePtr;
 }
 
 void Entity::setState(EntityState state)
@@ -11,12 +11,17 @@ void Entity::setState(EntityState state)
     mState = state;
 }
 
+double Entity::getSpeed() const
+{
+    return mSpeed;
+}
+
 int Entity::getMaxHP() const
 {
-    return this->maxHP;
+    return mMaxHP;
 }
 
 int Entity::getHP() const
 {
-    return this->HP;
+    return mHP;
 }

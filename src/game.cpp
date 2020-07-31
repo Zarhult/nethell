@@ -9,20 +9,22 @@
 #include <vector>
 #include <memory>
 
-Game::Game(int winWidth, int winHeight)
+Game::Game()
 {
-    // Initialize SDL and prepare the window and renderer, with vsync
+    // Initialize SDL and prepare the window and renderer
     if (SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
         throw std::runtime_error(SDL_GetError());
     }
 
-    mWindow.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winWidth, winHeight,
+    mWindow.reset(SDL_CreateWindow("Nethell", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWinWidth, mWinHeight,
                                    SDL_WINDOW_SHOWN));
     if (mWindow == nullptr) 
     {
         throw std::runtime_error(SDL_GetError());
-    } 
+    }
+    // Fullscreen window
+    SDL_SetWindowFullscreen(mWindow.get(), SDL_WINDOW_FULLSCREEN);
 
     mRenderer.reset(SDL_CreateRenderer(mWindow.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
     if (mRenderer == nullptr)
@@ -45,7 +47,7 @@ Game::Game(int winWidth, int winHeight)
     }
 
     // Set game font    
-    mGameFont.reset(TTF_OpenFont("/usr/share/fonts/liberation/LiberationSans-Regular.ttf", 16));
+    mGameFont.reset(TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16));
     if (mGameFont == nullptr)
     {
         throw std::runtime_error(TTF_GetError());
@@ -54,7 +56,8 @@ Game::Game(int winWidth, int winHeight)
     // Populate mSpriteSheetVec
     this->loadSpriteSheet("sprites/wizard.png", true, 120, 120, 2, 1);
 
-    // Set up starting entities
+    // Set up starting entities, in the order specified in spriteenums.hpp
+    // TODO: make this automatically loop through the enums, with starting sprite of 0
     this->newEntity(PLAYER, PLAYER_IDLE);
     this->getEntity(PLAYER)->getSprite()->toggleOnscreen(); // Default position is (0, 0), so no need to set it
 
@@ -62,79 +65,78 @@ Game::Game(int winWidth, int winHeight)
     mIsRunning = true;
 }
 
-void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX,
-                           int spritesY)
+void Game::eventHandle(SDL_Event event)
 {
-    SpriteSheet::SpriteSheetShPtr spriteSheet {std::make_shared<SpriteSheet>(mRenderer, isAnimation, spriteWidth, spriteHeight, 
-                                                                             spritesX, spritesY)};
-    spriteSheet->loadFromFile(path);
-    mSpriteSheetVec.push_back(std::move(spriteSheet));
-}
-
-void Game::eventHandle()
-{
-    while(SDL_PollEvent(&mEvent))
+    if (event.type == SDL_QUIT)
     {
-        if (mEvent.type == SDL_QUIT)
-        {
-            mIsRunning = false;
-        }
-        
-        if (mEvent.type == SDL_MOUSEBUTTONDOWN)
-        {
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            // stuff with mouse...
-        }
+        mIsRunning = false;
+    }
+    
+    if (event.type == SDL_MOUSEBUTTONDOWN)
+    {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        // stuff with mouse...
     }
 }
 
-void Game::step()
+void Game::step(double timeStep)
 {
-    // Progress all sprite animations once every 15 frames (0.25 s)
-    // Note that doing this with a number like 31 (doesn't evenly divide FPS) would not animate every 31 frames
-    for (unsigned i = 0; i < mEntityVec.size(); ++i)
-    {
-        if (mFrame % 1 == 0)
+    // Progress all sprite animations once every 0.25 s
+    if (mGameLogicTime - mLastAnimTime >= 250) {
+        mLastAnimTime = mGameLogicTime;
+        for (unsigned i = 0; i < mEntityVec.size(); ++i)
         {
             mEntityVec.at(i)->animate();
         }
     }
 
+    // for testing purposes
+    if (mKeyboardState[SDL_SCANCODE_Q]) {
+        mIsRunning = false;
+    }
+    
     // If player is moving...
     if (mKeyboardState[SDL_SCANCODE_W] || mKeyboardState[SDL_SCANCODE_A] || mKeyboardState[SDL_SCANCODE_S] ||
         mKeyboardState[SDL_SCANCODE_D])
     {
+        if (mDebug) {
+            std::cout << "Player Moving" << std::endl;
+        }
         mEntityVec.at(PLAYER)->setState(ENTITY_WALKING);
 
         Sprite::SpriteShPtr playerSprite = mEntityVec.at(PLAYER)->getSprite();
+        double speed = mEntityVec.at(PLAYER)->getSpeed();
+        
         if (mKeyboardState[SDL_SCANCODE_W])
         {
-            playerSprite->shiftXY(0, -10);
-            std::cout << mFrame << std::endl;
+            playerSprite->shiftXY(0.0, -speed * timeStep);
         }
         else if (mKeyboardState[SDL_SCANCODE_A])
         {
-            playerSprite->shiftXY(-10, 0);
+            playerSprite->shiftXY(-speed * timeStep, 0.0);
             playerSprite->setFlipType(SDL_FLIP_HORIZONTAL);
         }
         else if (mKeyboardState[SDL_SCANCODE_S])
         {
-            playerSprite->shiftXY(0, 10);
+            playerSprite->shiftXY(0.0, speed * timeStep);
         }
         else if (mKeyboardState[SDL_SCANCODE_D])
         {
-            playerSprite->shiftXY(10, 0);
+            playerSprite->shiftXY(speed * timeStep, 0.0);
             playerSprite->setFlipType(SDL_FLIP_NONE);
         }
     }
     else
     {
+        if (mDebug) {
+            std::cout << "Player Idle" << std::endl;
+        }
         mEntityVec.at(PLAYER)->setState(ENTITY_IDLE);
     }
-    
-    // Update frame number
-    mFrame = (mFrame % mFPS) + 1;
+
+    // Update game's internal clock
+    mGameLogicTime += timeStep;
 }
 
 void Game::render()
@@ -152,6 +154,16 @@ void Game::render()
 
     SDL_RenderPresent(mRenderer.get());
 }
+
+void Game::loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX,
+                           int spritesY)
+{
+    SpriteSheet::SpriteSheetShPtr spriteSheet {std::make_shared<SpriteSheet>(mRenderer, isAnimation, spriteWidth, spriteHeight, 
+                                                                             spritesX, spritesY)};
+    spriteSheet->loadFromFile(path);
+    mSpriteSheetVec.push_back(std::move(spriteSheet));
+}
+
 
 void Game::newEntity(SpriteName name, int startingSprite)
 {
@@ -181,17 +193,21 @@ Entity::EntityShPtr Game::getEntity(int entityVecPos) const
     return mEntityVec.at(entityVecPos);
 }
 
+int Game::getFrameStepCap() const
+{
+    return mFrameStepCap;
+}
+
+double Game::getTimeStep() const
+{
+    return mTimeStep;
+}
+
+bool Game::debugEnabled() const
+{
+    return mDebug;
+}
 bool Game::isRunning() const
 {
     return mIsRunning;
-}
-
-int Game::getTimeStep() const
-{
-    return 1000 / mFPS;
-}
-
-int Game::getFrame() const
-{
-    return mFrame;
 }

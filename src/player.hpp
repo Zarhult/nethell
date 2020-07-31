@@ -7,7 +7,7 @@
 class Player : public Entity
 {
 public:
-    Player(Sprite::SpriteShPtr spritePtr) : Entity(spritePtr) {};
+    Player(Sprite::SpriteShPtr spritePtr) : Entity(spritePtr, 0.5, 10, 10) {};
     virtual void animate();
 };
 

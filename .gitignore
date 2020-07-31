@@ -12,6 +12,9 @@ compile_commands.json
 # ctags
 tags
 
+# emacs locals
+.dir-locals.el
+
 # Executable
 nethell
 

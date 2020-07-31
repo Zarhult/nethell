@@ -13,7 +13,7 @@ void Sprite::render()
     mSpriteSheetPtr->render(mXPos, mYPos, &clip, mAngle, nullptr, mFlipType);
 }
 
-void Sprite::shiftXY(int x, int y)
+void Sprite::shiftXY(float x, float y)
 {
     mXPos += x;
     mYPos += y;

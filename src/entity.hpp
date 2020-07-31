@@ -16,19 +16,21 @@ public:
     using EntityShPtr = std::shared_ptr<Entity>;
     
 public:
-    Entity(Sprite::SpriteShPtr spritePtr) : mSpritePtr(spritePtr) {};
+    Entity(Sprite::SpriteShPtr spritePtr, double speed, int maxHP, int HP) : mSpritePtr(spritePtr), mSpeed(speed), mMaxHP(maxHP), mHP(HP) {};
     virtual void animate() = 0; // Progress animation depending on the entity's state
     void setState(EntityState state);
 
     Sprite::SpriteShPtr getSprite() const;
+    double getSpeed() const;
     int getMaxHP() const;
-    int getHP()    const;
+    int getHP() const;
     
 protected:
     Sprite::SpriteShPtr mSpritePtr {nullptr}; // Pointer to entity's sprite
     EntityState mState {ENTITY_IDLE};
-    int maxHP; // Add stats here...
-    int HP;
+    double mSpeed; // Movement speed in pixels per ms
+    int mMaxHP; // Add stats here...
+    int mHP {};
 };
 
 #endif

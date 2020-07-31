@@ -9,27 +9,43 @@ int main()
 {
     try
     {
-        const int winWidth  {1920};
-        const int winHeight {1080};
+        Game game;
 
-        Game game(winWidth, winHeight);
-
-        // Cap framerate and game processing at the game's FPS
-        Uint32 frameStart;
-        Uint32 frameTime;
-        while (game.isRunning())
-        {
-            frameStart = SDL_GetTicks();
-
-            game.eventHandle();
-            game.step();
-            game.render();
-
-            frameTime = SDL_GetTicks() - frameStart;
-            if (frameTime < static_cast<Uint32>(game.getTimeStep()))
-            {
-                SDL_Delay(game.getTimeStep() - frameTime);
+        // Avoid using accessors repeatedly
+        const double timeStep {game.getTimeStep()};
+        const bool debugEnabled {game.debugEnabled()};
+        
+        Uint32 currentTime {0}; // Time at start of game loop
+        Uint32 lastFrameTime {0}; // Time at start of previous game loop
+        double catchupTime {0.0}; // Amount of game time that needs to be handled each main loop, accounting for potential lag
+        double cap = game.getFrameStepCap() * timeStep; // Cap for the above in case things get way behind
+        
+        // Now run the game, adhering to max and min FPS (by making multiple steps before rendering, when get behind)
+        while (game.isRunning()) {
+            currentTime = SDL_GetTicks();
+            catchupTime += currentTime - lastFrameTime;
+            
+            if (catchupTime > cap) {
+                catchupTime = cap;
             }
+
+            while (catchupTime >= timeStep) {
+                catchupTime -= timeStep;
+                
+                SDL_Event event;
+                while (SDL_PollEvent(&event)) {
+                    game.eventHandle(event);
+                }
+                
+                if (debugEnabled) {
+                    std::cout << "Stepping game. catchupTime: " << catchupTime << std::endl;
+                }
+                
+                game.step(timeStep); // Advance game logic by 1 frame worth of time
+            }
+            
+            game.render();
+            lastFrameTime = currentTime;
         }
     }
     catch(std::logic_error &exception)

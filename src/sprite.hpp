@@ -15,7 +15,7 @@ public:
     
     void render();
     
-    void shiftXY(int x, int y);
+    void shiftXY(float x, float y);
     void setAngle(double angle);
     void setFlipType(SDL_RendererFlip flipType);
     void setSpriteNum(int spriteNum);
@@ -33,8 +33,8 @@ private:
     int mSpriteNum {0};                                         // Its number in the sprite sheet
     double mAngle {0.0};
     SDL_RendererFlip mFlipType {SDL_FLIP_NONE};
-    int mXPos {0};
-    int mYPos {0};
+    float mXPos {0.0};
+    float mYPos {0.0};
     bool mIsOnscreen {false};
 };
 
