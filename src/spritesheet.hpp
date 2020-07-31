@@ -12,8 +12,8 @@ public:
     using SpriteSheetShPtr = std::shared_ptr<SpriteSheet>;
     
 public:
-    SpriteSheet(sdlw::RendererShPtr texRenderer, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY) 
-        : Texture(texRenderer), mIsAnimation(isAnimation), mSpriteWidth(spriteWidth), mSpriteHeight(spriteHeight), 
+    SpriteSheet(sdlw::RendererShPtr renderer, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX, int spritesY) 
+        : Texture(renderer), mIsAnimation(isAnimation), mSpriteWidth(spriteWidth), mSpriteHeight(spriteHeight), 
           mSpritesX(spritesX), mSpritesY(spritesY) {} 
     
     bool isAnimation()    const;

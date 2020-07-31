@@ -11,7 +11,7 @@ int main()
     {
         Game game;
 
-        // Avoid using accessors repeatedly
+        // To avoid using accessors repeatedly in main loop
         const double timeStep {game.getTimeStep()};
         const bool debugEnabled {game.debugEnabled()};
         
@@ -21,29 +21,33 @@ int main()
         double cap = game.getFrameStepCap() * timeStep; // Cap for the above in case things get way behind
         
         // Now run the game, adhering to max and min FPS (by making multiple steps before rendering, when get behind)
-        while (game.isRunning()) {
+        while (game.isRunning())
+        {
             currentTime = SDL_GetTicks();
             catchupTime += currentTime - lastFrameTime;
             
-            if (catchupTime > cap) {
+            if (catchupTime > cap)
+            {
                 catchupTime = cap;
             }
 
-            while (catchupTime >= timeStep) {
+            while (catchupTime >= timeStep)
+            {
                 catchupTime -= timeStep;
                 
                 SDL_Event event;
-                while (SDL_PollEvent(&event)) {
+                while (SDL_PollEvent(&event))
+                {
                     game.eventHandle(event);
                 }
-                
-                if (debugEnabled) {
+
+                if (debugEnabled)
+                {
                     std::cout << "Stepping game. catchupTime: " << catchupTime << std::endl;
                 }
-                
                 game.step(timeStep); // Advance game logic by 1 frame worth of time
             }
-            
+
             game.render();
             lastFrameTime = currentTime;
         }

@@ -4,6 +4,8 @@
 #include "sprite.hpp"
 #include <memory>
 
+// Internal states used so functions like animate() can set the sprite appropriately without
+// the caller needing to do anything besides possibly set the state
 enum EntityState
 {
     ENTITY_IDLE,
@@ -21,6 +23,7 @@ public:
     void setState(EntityState state);
 
     Sprite::SpriteShPtr getSprite() const;
+    EntityState getState() const;
     double getSpeed() const;
     int getMaxHP() const;
     int getHP() const;

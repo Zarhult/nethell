@@ -1,14 +1,19 @@
 #include "entity.hpp"
 #include "sprite.hpp"
 
+void Entity::setState(EntityState state)
+{
+    mState = state;
+}
+
 Sprite::SpriteShPtr Entity::getSprite() const
 {
     return mSpritePtr;
 }
 
-void Entity::setState(EntityState state)
+EntityState Entity::getState() const
 {
-    mState = state;
+    return mState;
 }
 
 double Entity::getSpeed() const

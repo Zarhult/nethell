@@ -9,7 +9,7 @@
 
 void Texture::loadFromFile(const std::string &path)
 {
-    assert(texRenderer);
+    assert(mTexRenderer);
 
     // Reset if existing texture
     if (mTexture)
@@ -26,7 +26,7 @@ void Texture::loadFromFile(const std::string &path)
         throw std::runtime_error("Texture::loadFromFile error: " + err);
     }
 
-    mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), loadedSurface));
+    mTexture.reset(SDL_CreateTextureFromSurface(mTexRenderer.get(), loadedSurface));
     if (mTexture == nullptr)
     {
         std::string err {IMG_GetError()};
@@ -41,7 +41,7 @@ void Texture::loadFromFile(const std::string &path)
 
 void Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, SDL_Color textColor)
 {
-    assert(texRenderer);
+    assert(mTexRenderer);
 
     // Reset if existing texture
     if (mTexture)
@@ -58,7 +58,7 @@ void Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, 
         throw std::runtime_error("Texture::loadFromRenderedText error: " + err);
     }
 
-    mTexture.reset(SDL_CreateTextureFromSurface(texRenderer.get(), textSurface));
+    mTexture.reset(SDL_CreateTextureFromSurface(mTexRenderer.get(), textSurface));
     if (mTexture == nullptr)
     {
         std::string err {SDL_GetError()};
@@ -73,8 +73,9 @@ void Texture::loadFromRenderedText(const std::string &text, TTF_Font* textFont, 
 
 void Texture::render(int xPos, int yPos, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
-    assert(texRenderer);
-
+    assert(mTexRenderer);
+    assert(mTexture);
+    
     SDL_Rect renderArea {xPos, yPos, mWidth, mHeight};
 
     if (clip != nullptr)
@@ -83,7 +84,7 @@ void Texture::render(int xPos, int yPos, SDL_Rect* clip, double angle, SDL_Point
         renderArea.h = clip->h;
     }
 
-    SDL_RenderCopyEx(texRenderer.get(), mTexture.get(), clip, &renderArea, angle, center, flip);
+    SDL_RenderCopyEx(mTexRenderer.get(), mTexture.get(), clip, &renderArea, angle, center, flip);
 }
 
 int Texture::getWidth() const

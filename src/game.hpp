@@ -20,10 +20,8 @@ public:
     
     /* Game Functions */
     
-    // Sprite sheets contain each frame of an animation for a single entity, or a sheet of various static sprites, but never a
-    // combination.
     void eventHandle(SDL_Event event); // Process an event
-    void step(double timeStep); // Step game logic forward by timeStep milliseconds, incrementing step number
+    void step(double timeStep); // Step game logic forward by timeStep milliseconds
     void render(); // Render all onscreen sprites
     void loadSpriteSheet(const std::string &path, bool isAnimation, int spriteWidth, int spriteHeight, int spritesX,
                          int spritesY);
@@ -44,7 +42,7 @@ private:
     sdlw::RendererShPtr mRenderer {nullptr};
     std::vector<SpriteSheet::SpriteSheetShPtr> mSpriteSheetVec;
     std::vector<Entity::EntityShPtr> mEntityVec;
-    sdlw::FontShPtr mGameFont;
+    sdlw::FontShPtr mGameFont {nullptr};
 
     /* Other SDL items */
     const Uint8 *mKeyboardState {SDL_GetKeyboardState(nullptr)};
@@ -52,14 +50,15 @@ private:
     /* Game internals for timing, running, window size, framerate, etc. */
     const int mWinWidth {1920};
     const int mWinHeight {1080};
-    const int mMaxFPS {144};
-    const int mFrameStepCap {12}; // Max steps per frame (ideally always 1 step, but sometimes must skip frames for lag)
-    const int mMinFPS {mMaxFPS / mFrameStepCap}; // FPS when skipping mFrameStepCap every frame
+    const int mMaxFPS {1000};
+    const int mMinFPS {10};
+    const int mFrameStepCap {mMaxFPS / mMinFPS}; // Max steps per frame such that min FPS is as defined
     const double mTimeStep {1000.0 / mMaxFPS}; // Time per step in ms
     
     double mGameLogicTime {0.0}; // Time of the game's internal logic - the result of time steps
     double mLastAnimTime {0}; // Last time sprites were animated
     bool mDebug {true}; // Whether or not to output game state information
+    bool mRenderReady {false}; // Whether or not there is a point in rendering
     bool mIsRunning {false};
 };
 

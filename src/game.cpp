@@ -63,6 +63,7 @@ Game::Game()
 
     // If all initialized successfully...
     mIsRunning = true;
+    mRenderReady = true;
 }
 
 void Game::eventHandle(SDL_Event event)
@@ -100,14 +101,12 @@ void Game::step(double timeStep)
     if (mKeyboardState[SDL_SCANCODE_W] || mKeyboardState[SDL_SCANCODE_A] || mKeyboardState[SDL_SCANCODE_S] ||
         mKeyboardState[SDL_SCANCODE_D])
     {
-        if (mDebug) {
-            std::cout << "Player Moving" << std::endl;
-        }
         mEntityVec.at(PLAYER)->setState(ENTITY_WALKING);
 
         Sprite::SpriteShPtr playerSprite = mEntityVec.at(PLAYER)->getSprite();
         double speed = mEntityVec.at(PLAYER)->getSpeed();
-        
+
+        // perhaps should use switch on keysym events instead of key states for stuff like this
         if (mKeyboardState[SDL_SCANCODE_W])
         {
             playerSprite->shiftXY(0.0, -speed * timeStep);
@@ -129,29 +128,38 @@ void Game::step(double timeStep)
     }
     else
     {
-        if (mDebug) {
-            std::cout << "Player Idle" << std::endl;
-        }
         mEntityVec.at(PLAYER)->setState(ENTITY_IDLE);
     }
 
     // Update game's internal clock
     mGameLogicTime += timeStep;
+
+    // Signal that a render would not be a waste of time (state has changed)
+    mRenderReady = true;
 }
 
 void Game::render()
 {
-    SDL_RenderClear(mRenderer.get());
-
-    // Render all onscreen sprites
-    for (unsigned i = 0; i < mEntityVec.size(); ++i)
+    if (mRenderReady)
     {
-        if (mEntityVec.at(i)->getSprite()->isOnscreen())
+        if (mDebug)
         {
-            mEntityVec.at(i)->getSprite()->render();
+            std::cout << "Rendering." << std::endl;
         }
-    }
 
+        SDL_RenderClear(mRenderer.get());
+
+        // Render all onscreen sprites
+        for (unsigned i = 0; i < mEntityVec.size(); ++i)
+        {
+            if (mEntityVec.at(i)->getSprite()->isOnscreen())
+            {
+                mEntityVec.at(i)->getSprite()->render();
+            }
+        }
+
+        mRenderReady = false;
+    }
     SDL_RenderPresent(mRenderer.get());
 }
 
